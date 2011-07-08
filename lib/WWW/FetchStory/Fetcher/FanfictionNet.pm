@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 BEGIN {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1003';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1004';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1003
+version 0.1004
 
 =head1 DESCRIPTION
 
@@ -134,7 +134,7 @@ sub extract_story {
     warn "chapter=$chapter\n" if $self->{verbose};
 
     my $story = '';
-    if ($content =~ m#id=storycontent class=storycontent>(.*?)\s*</div>\s*<div id=content>#s)
+    if ($content =~ m#id=storycontent class=storycontent>(.*?)\s*</div>\s*</div>\s*<div id=content>#s)
     {
 	$story = $1;
     }
