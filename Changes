@@ -1,0 +1,178 @@
+Revision History for WWW-FetchStory
+===================================
+
+v0.10 2011-07-08
+----------------
+
+* 2011-07-08 17:26:18 +1000
+  version bump
+* 2011-07-08 17:24:33 +1000
+  Convert to EPUB option!
+* 2011-07-08 13:51:54 +1000
+  Make a separate README file.
+* 2011-07-08 12:09:03 +1000
+  added a README.pod for github
+* 2011-04-22 17:01:59 +1000
+  refine parsing of URLs
+* 2011-04-22 16:48:36 +1000
+  refine parsing of URLs
+* 2011-03-24 10:11:37 +1100
+  Version bump.
+
+v0.09 2011-03-24
+----------------
+
+* 2011-03-24 10:05:01 +1100
+  Get story and chapter wordcounts.
+
+v0.08 2011-02-27
+----------------
+
+* 2011-02-27 18:34:16 +1100
+  version bump
+* 2011-02-27 18:31:16 +1100
+  Added ToC option to build a Table-of-Contents file
+* 2011-02-27 18:30:15 +1100
+  Tweaking info and parsing summary.
+* 2011-02-27 16:57:36 +1100
+  Improved information.
+
+v0.07 2010-12-18
+----------------
+
+* 2010-12-18 17:05:11 +1100
+  version bump
+* 2010-12-18 17:04:04 +1100
+  added fetcher for Potter Place
+
+v0.06 2010-12-07
+----------------
+
+* 2010-12-07 10:21:26 +1100
+  modifying fetching for multi urls
+
+v0.05 2010-10-05
+----------------
+
+* 2010-10-05 09:12:02 +1100
+  Version bump.
+* 2010-10-05 09:03:30 +1100
+  New Fetcher for dracoandginny.com archive.
+
+v0.0401 2010-08-28
+------------------
+
+* 2010-08-28 14:39:16 +1000
+  version bump
+* 2010-08-28 14:38:58 +1000
+  typo
+
+v0.04 2010-08-28
+----------------
+
+* 2010-08-28 14:35:18 +1000
+  version bump
+* 2010-08-28 14:34:38 +1000
+  Added HP.AdultFanFiction.net fetcher.
+* 2010-08-28 13:21:00 +1000
+  Tweaking the tidy method.
+* 2010-08-28 13:20:37 +1000
+  Added fetcher for The Petulant Poetess.
+
+v0.0306 2010-08-28
+------------------
+
+* 2010-08-28 12:37:40 +1000
+  version bump
+* 2010-08-28 12:37:17 +1000
+  Remove underlines from titles.
+
+v0.0305 2010-08-28
+------------------
+
+* 2010-08-28 12:13:24 +1000
+  Version bump.
+* 2010-08-28 12:12:20 +1000
+  Tweaks and polishes; moving stuff around.
+
+v0.0304 2010-08-26
+------------------
+
+* 2010-08-26 12:24:22 +1000
+  Another stupid typo.
+
+v0.0303 2010-08-26
+------------------
+
+* 2010-08-26 12:17:34 +1000
+  Version bump.
+* 2010-08-26 12:16:52 +1000
+  Ooops.  Check for correct URL.
+
+v0.0302 2010-08-26
+------------------
+
+* 2010-08-26 12:01:46 +1000
+  Version bump.
+* 2010-08-26 12:00:10 +1000
+  Added fetcher for Tardis Big Bang 3.
+
+v0.0301 2010-08-26
+------------------
+
+* 2010-08-26 11:47:50 +1000
+  Version bump.
+* 2010-08-26 11:46:32 +1000
+  Added fetcher for DigitalQuill.
+
+v0.03 2010-08-06
+----------------
+
+* 2010-08-06 08:43:16 +1000
+  SSHG unknown authors fix
+* 2010-08-06 08:30:48 +1000
+  version bump?
+
+v0.0202 2010-08-02
+------------------
+
+* 2010-08-02 19:02:44 +1000
+  applied the same fix to other fields
+
+v0.0201 2010-08-02
+------------------
+
+* 2010-08-02 18:56:44 +1000
+  fixed bug with title parsing
+
+v0.01 2010-07-15
+----------------
+
+* 2010-07-15 00:57:32 +1000
+  added Universes for some archives
+* 2010-07-14 21:55:28 +1000
+  Added fetcher for OWL archive.
+* 2010-07-14 21:25:31 +1000
+  Added fetcher for Ashwinder archive.
+* 2010-07-14 20:31:10 +1000
+  Added a fetcher for "A Teaspoon And An Open Mind" archive
+* 2010-07-14 19:27:49 +1000
+  Added fanfiction.net fetcher.
+* 2010-07-14 17:54:22 +1000
+  Added PotionsAndSnitches fetcher.
+* 2010-07-14 17:53:21 +1000
+  Improving FictionAlley parsing.
+* 2010-07-12 22:12:06 +1000
+  Added script and some fetchers.
+* 2010-07-12 14:38:37 +1000
+  A skeleton for Fetcher plugins.
+* 2010-07-12 14:38:00 +1000
+  Made the dist.ini file a bit more readable.
+* 2010-07-03 22:49:05 +1000
+  More Dist::Zilla tweaking; also corrected test.
+* 2010-07-03 22:23:30 +1000
+  Tweaking for Dist::Zilla; still barebones.
+
+===================================
+End of changes in the last 365 days
+===================================

@@ -1,0 +1,50 @@
+
+use strict;
+use warnings;
+
+use Module::Build 0.3601;
+
+
+my %module_build_args = (
+  'build_requires' => {
+    'File::Find' => '0',
+    'Module::Build' => '0.3601',
+    'Test::More' => '0'
+  },
+  'configure_requires' => {
+    'Module::Build' => '0.3601'
+  },
+  'dist_abstract' => 'Fetch a story from a fiction website',
+  'dist_author' => [
+    'Kathryn Andersen <perlkat@katspace.org>'
+  ],
+  'dist_name' => 'WWW-FetchStory',
+  'dist_version' => '0.10',
+  'license' => 'perl',
+  'module_name' => 'WWW::FetchStory',
+  'recommends' => {},
+  'recursive_test_files' => 1,
+  'requires' => {
+    'Date::Format' => '0',
+    'EBook::EPUB' => '0',
+    'Encode::ZapCP1252' => '0',
+    'File::Basename' => '0',
+    'File::Copy' => '0',
+    'File::Temp' => '0',
+    'Getopt::Long' => '2.34',
+    'HTML::Entities' => '0',
+    'HTML::Strip' => '0',
+    'HTML::Tidy::libXML' => '0',
+    'Module::Pluggable' => '0',
+    'Pod::Usage' => '0',
+    'YAML::Any' => '0'
+  },
+  'script_files' => [
+    'scripts/fetch_story'
+  ]
+);
+
+
+my $build = Module::Build->new(%module_build_args);
+
+$build->create_build_script;
