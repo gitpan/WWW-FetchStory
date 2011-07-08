@@ -1,6 +1,14 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1001 2011-07-08
+------------------
+
+* 2011-07-08 18:30:49 +1000
+  version bump
+* 2011-07-08 18:29:55 +1000
+  Fixed bug with chapter-title parsing.
+
 v0.10 2011-07-08
 ----------------
 

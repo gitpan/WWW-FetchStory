@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::PetulantPoetess;
 BEGIN {
-  $WWW::FetchStory::Fetcher::PetulantPoetess::VERSION = '0.10';
+  $WWW::FetchStory::Fetcher::PetulantPoetess::VERSION = '0.1001';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::PetulantPoetess - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.10
+version 0.1001
 
 =head1 DESCRIPTION
 
