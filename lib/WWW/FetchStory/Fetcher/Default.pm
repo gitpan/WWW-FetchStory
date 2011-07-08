@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Default;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Default::VERSION = '0.1001';
+  $WWW::FetchStory::Fetcher::Default::VERSION = '0.1002';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Default - default fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1001
+version 0.1002
 
 =head1 DESCRIPTION
 
