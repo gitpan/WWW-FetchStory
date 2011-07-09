@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 BEGIN {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1004';
+  $WWW::FetchStory::Fetcher::VERSION = '0.11';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1004
+version 0.11
 
 =head1 DESCRIPTION
 
@@ -178,11 +178,7 @@ sub fetch {
 
     my $toc_content = $self->get_toc($args{url});
     my %story_info = $self->parse_toc(content=>$toc_content,
-				      url=>$args{url});
-    my $today = time2str('%Y-%m-%d', time);
-    $story_info{fetched} = $today;
-
-    warn Dump(\%story_info) if $self->{verbose};
+	url=>$args{url});
 
     my @ch_urls = @{$story_info{chapters}};
     my $one_chapter = (@ch_urls == 1);
@@ -208,6 +204,9 @@ sub fetch {
 	$story_info{wordcount} += $ch_info{wordcount};
 	$count++;
     }
+    $self->derive_values(info=>\%story_info);
+
+    warn Dump(\%story_info) if $self->{verbose};
 
     $story_info{storyfiles} = \@storyfiles;
     $story_info{chapter_titles} = \@ch_titles;
@@ -459,6 +458,7 @@ sub parse_toc {
     $info{summary} = $self->parse_summary(%args);
     $info{characters} = $self->parse_characters(%args);
     $info{universe} = $self->parse_universe(%args);
+    $info{category} = $self->parse_category(%args);
     $info{chapters} = \@chapters;
 
     return %info;
@@ -676,6 +676,70 @@ sub parse_universe {
     return $universe;
 } # parse_universe
 
+=head2 parse_category
+
+Get the categories from the content
+
+=cut
+sub parse_category {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $category = '';
+    if ($content =~ m#(?:Category|Tags):</(?:b|strong|u)>([^<]+)#is)
+    {
+	$category = $1;
+    }
+    return $category;
+} # parse_category
+
+=head2 derive_values
+
+Calculate additional Meta values, such as current date.
+
+=cut
+sub derive_values {
+    my $self = shift;
+    my %args = @_;
+
+    my $today = time2str('%Y-%m-%d', time);
+    $args{info}->{fetched} = $today;
+
+    my $words = $args{info}->{wordcount};
+    if ($words)
+    {
+	my $len = '';
+	if ($words == 100)
+	{
+	    $len = 'Drabble';
+	} elsif ($words == 200)
+	{
+	    $len = 'Double Drabble';
+	} elsif ($words >= 50000)
+	{
+	    $len = 'Novel';
+	} elsif ($words >= 20000)
+	{
+	    $len = 'Novella';
+	} elsif ($words >= 7500)
+	{
+	    $len = 'Novelette';
+	} elsif ($words >= 1000)
+	{
+	    $len = 'Short Story';
+	} elsif ($words < 1000)
+	{
+	    $len = 'Vignette';
+	}
+	$args{info}->{story_length} = $len if $len;
+    }
+} # derive_values
+
 =head2 get_chapter
 
 Get an individual chapter of the story, tidy it,
@@ -836,8 +900,15 @@ sub build_epub {
 	if (!($key =~ /(?:title|author|summary|url|wordcount|basename)/)
 	    and !ref $info->{$key})
 	{
-	    my $label = $key . ': ';
-	    $label = '' if $key eq 'category';
+	    my $label;
+	    if ($key =~ /^(?:category|story_length)$/)
+	    {
+		$label = '';
+	    }
+	    else
+	    {
+		$label = $key . ': ';
+	    }
 	    if ($info->{$key} =~ /, /)
 	    {
 		push @subjects, map { "${label}$_" } split(/, /, $info->{$key});

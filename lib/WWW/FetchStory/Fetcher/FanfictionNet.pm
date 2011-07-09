@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 BEGIN {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1004';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.11';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1004
+version 0.11
 
 =head1 DESCRIPTION
 
@@ -135,6 +135,10 @@ sub extract_story {
 
     my $story = '';
     if ($content =~ m#id=storycontent class=storycontent>(.*?)\s*</div>\s*</div>\s*<div id=content>#s)
+    {
+	$story = $1;
+    }
+    elsif ($content =~ m#id=storycontent class=storycontent>(.*?)\s*</div>\s*<div id=content>#s)
     {
 	$story = $1;
     }

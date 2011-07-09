@@ -1,6 +1,18 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.11 2011-07-09
+----------------
+
+* 2011-07-09 11:20:15 +1000
+  version bump
+* 2011-07-09 11:18:03 +1000
+  Making the story_length work properly
+* 2011-07-09 11:03:40 +1000
+  added calculation of story-length eg Novel
+* 2011-07-08 21:05:47 +1000
+  Another bug fix.
+
 v0.1004 2011-07-08
 ------------------
 
