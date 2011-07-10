@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::DreamWidth;
 BEGIN {
-  $WWW::FetchStory::Fetcher::DreamWidth::VERSION = '0.11';
+  $WWW::FetchStory::Fetcher::DreamWidth::VERSION = '0.12';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::DreamWidth - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 DESCRIPTION
 

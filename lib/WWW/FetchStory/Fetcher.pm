@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 BEGIN {
-  $WWW::FetchStory::Fetcher::VERSION = '0.11';
+  $WWW::FetchStory::Fetcher::VERSION = '0.12';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 DESCRIPTION
 
@@ -459,6 +459,7 @@ sub parse_toc {
     $info{characters} = $self->parse_characters(%args);
     $info{universe} = $self->parse_universe(%args);
     $info{category} = $self->parse_category(%args);
+    $info{rating} = $self->parse_rating(%args);
     $info{chapters} = \@chapters;
 
     return %info;
@@ -698,6 +699,32 @@ sub parse_category {
     return $category;
 } # parse_category
 
+=head2 parse_rating
+
+Get the rating from the content
+
+=cut
+sub parse_rating {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $rating = '';
+    if ($content =~ m!^Rating:\s(.*?)$!m)
+    {
+	$rating = $1;
+    }
+    elsif ($content =~ m#Rating:</(?:b|strong|u)>\s*([^<]+)#is)
+    {
+	$rating = $1;
+    }
+    return $rating;
+} # parse_rating
+
 =head2 derive_values
 
 Calculate additional Meta values, such as current date.
@@ -737,6 +764,16 @@ sub derive_values {
 	    $len = 'Vignette';
 	}
 	$args{info}->{story_length} = $len if $len;
+    }
+    for my $field (qw{characters universe category})
+    {
+	if (exists $args{info}->{$field}
+		and defined $args{info}->{$field}
+		and $args{info}->{$field} =~ /,/s)
+	{
+	    my @chars = split(/,\s*/s, $args{info}->{$field});
+	    $args{info}->{$field} = \@chars;
+	}
     }
 } # derive_values
 
@@ -897,7 +934,7 @@ sub build_epub {
     my @subjects = ();
     foreach my $key (keys %{$info})
     {
-	if (!($key =~ /(?:title|author|summary|url|wordcount|basename)/)
+	if (!($key =~ /(?:title|author|summary|url|fetched|wordcount|basename)/)
 	    and !ref $info->{$key})
 	{
 	    my $label;

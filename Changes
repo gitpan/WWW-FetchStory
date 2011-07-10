@@ -1,6 +1,24 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.12 2011-07-10
+----------------
+
+* 2011-07-10 15:18:35 +1000
+  version bump
+* 2011-07-10 15:17:33 +1000
+  Added Fetcher for AO3.
+* 2011-07-10 15:16:41 +1000
+  Added parse_rating; split certain meta into Arrays
+* 2011-07-09 12:33:50 +1000
+  tweak
+* 2011-07-09 12:22:09 +1000
+  Revamped the character-parsing for Teaspoon.
+* 2011-07-09 11:41:53 +1000
+  correcting error with Teaspoon author parsing
+* 2011-07-09 11:30:08 +1000
+  "fetched" is not a Subject
+
 v0.11 2011-07-09
 ----------------
 
