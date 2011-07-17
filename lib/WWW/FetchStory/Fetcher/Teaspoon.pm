@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Teaspoon;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Teaspoon::VERSION = '0.12';
+  $WWW::FetchStory::Fetcher::Teaspoon::VERSION = '0.1201';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Teaspoon - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.12
+version 0.1201
 
 =head1 DESCRIPTION
 
