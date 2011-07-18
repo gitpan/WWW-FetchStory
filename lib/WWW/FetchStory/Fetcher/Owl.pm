@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Owl;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Owl::VERSION = '0.1201';
+  $WWW::FetchStory::Fetcher::Owl::VERSION = '0.13';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Owl - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1201
+version 0.13
 
 =head1 DESCRIPTION
 

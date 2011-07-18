@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 BEGIN {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1201';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.13';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1201
+version 0.13
 
 =head1 DESCRIPTION
 

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 BEGIN {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1201';
+  $WWW::FetchStory::Fetcher::VERSION = '0.13';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1201
+version 0.13
 
 =head1 DESCRIPTION
 
@@ -248,23 +248,33 @@ sub get_story_basename {
     $base =~ s/-/ /g; # replace dashes with spaces
     $base =~ s/[^\w\s]//g;
     $base = lc($base);
+
     my @words = split(' ', $base);
-    my @first_words = ();
     my $max_words = 3;
-    for (my $i = 0; $i < @words and @first_words < $max_words; $i++)
+    my @first_words = ();
+    # if there are three words or less, use all of them
+    if (@words <= $max_words)
     {
-	# also skip little words
-	if ($words[$i] =~ /^(the|a|an|and)$/)
+	@first_words = @words;
+    }
+    else
+    {
+	$max_words++ if (@words > 3); # four
+	$max_words++ if (@words > 5); # five if a lot
+	for (my $i = 0; $i < @words and @first_words < $max_words; $i++)
 	{
-	}
-	elsif (@first_words >= 2 and $words[$i] =~ /^(of|and|to|in)$/)
-	{
-	    # if the third word is a little word, forget it
-	    last;
-	}
-	else
-	{
-	    push @first_words, $words[$i];
+	    # skip little words
+	    if ($words[$i] =~ /^(the|a|an|and)$/)
+	    {
+	    }
+	    elsif (@words > 4 and $words[$i] =~ /^(of|to|in|or|on|by|i|is)$/)
+	    {
+		# if there are a lot of words, skip these little words too
+	    }
+	    else
+	    {
+		push @first_words, $words[$i];
+	    }
 	}
     }
 
@@ -934,7 +944,7 @@ sub build_epub {
     # characters, universes
     foreach my $key (qw(characters universe))
     {
-	if (exists $info->{$key})
+	if (exists $info->{$key} and $info->{$key})
 	{
 	    if ($info->{$key} =~ /,\s*/)
 	    {
