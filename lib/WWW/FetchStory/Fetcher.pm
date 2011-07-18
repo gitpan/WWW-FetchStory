@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 BEGIN {
-  $WWW::FetchStory::Fetcher::VERSION = '0.13';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1301';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.13
+version 0.1301
 
 =head1 DESCRIPTION
 
@@ -267,7 +267,7 @@ sub get_story_basename {
 	    if ($words[$i] =~ /^(the|a|an|and)$/)
 	    {
 	    }
-	    elsif (@words > 4 and $words[$i] =~ /^(of|to|in|or|on|by|i|is)$/)
+	    elsif (@words > 4 and $words[$i] =~ /^(of|to|in|or|on|by|i|is|isnt|its)$/)
 	    {
 		# if there are a lot of words, skip these little words too
 	    }
@@ -364,6 +364,7 @@ sub tidy {
     );
 
     my $story = $args{story};
+    $story = $self->tidy_chars($story);
     my $title = $args{title};
     my $css = $self->make_css(%args);
 

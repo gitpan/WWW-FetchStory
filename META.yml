@@ -29,4 +29,4 @@ requires:
   Module::Pluggable: 0
   Pod::Usage: 0
   YAML::Any: 0
-version: 0.13
+version: 0.1301
