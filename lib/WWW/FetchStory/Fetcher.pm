@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 BEGIN {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1302';
+  $WWW::FetchStory::Fetcher::VERSION = '0.14';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1302
+version 0.14
 
 =head1 DESCRIPTION
 
@@ -143,7 +143,8 @@ Fetch the story, with the given options.
     %story_info = $obj->fetch(
 	url=>$url,
 	basename=>$basename,
-	toc=>0);
+	toc=>0,
+	yaml=>0);
 
 =over
 
@@ -155,6 +156,10 @@ If this is not given, the basename is derived from the title of the story.
 =item toc
 
 Build a table-of-contents file if this is true.
+
+=item yaml
+
+Build a YAML file with meta-data about this story if this is true.
 
 =item url
 
@@ -203,6 +208,7 @@ sub fetch {
 	push @ch_wc, $ch_info{wordcount};
 	$story_info{wordcount} += $ch_info{wordcount};
 	$count++;
+	sleep 1; # try not to overload the archive
     }
     $self->derive_values(info=>\%story_info);
 
@@ -219,7 +225,18 @@ sub fetch {
     }
     if ($args{epub})
     {
-	my $epub = $self->build_epub(info=>\%story_info);
+	my $epub_file = $self->build_epub(info=>\%story_info);
+	# if we have built an EPUB file, then the storyfiles
+	# are now just one EPUB file.
+	$story_info{storyfiles} = [$epub_file];
+    }
+    if ($args{yaml})
+    {
+	my $filename = sprintf("%s.yml", $story_info{basename});
+	my $ofh;
+	open($ofh, ">",  $filename) || die "Can't write to $filename";
+	print $ofh Dump(\%story_info);
+	close($ofh);
     }
 
     return %story_info;
@@ -1044,7 +1061,8 @@ EOT
 	);
     }
 
-    $epub->pack_zip($info->{basename} . '.epub');
+    my $epub_file = $info->{basename} . '.epub';
+    $epub->pack_zip($epub_file);
 
     # now unlink the storyfiles
     for (my $i=0; $i < @storyfiles; $i++)
@@ -1052,6 +1070,7 @@ EOT
 	unlink $storyfiles[$i];
     }
 
+    return $epub_file;
 } # build_epub
 
 =head2 tidy_chars

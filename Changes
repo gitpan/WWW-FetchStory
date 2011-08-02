@@ -1,6 +1,24 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.14 2011-08-02
+----------------
+
+* 2011-08-02 10:06:44 +1000
+  version bump
+* 2011-08-01 12:15:31 +1000
+  expand character names
+* 2011-08-01 12:12:17 +1000
+  expand character names
+* 2011-08-01 10:22:15 +1000
+  Merge branch 'master' of github.com:rubykat/WWW-FetchStory
+* 2011-08-01 10:21:50 +1000
+  make the storyfiles correct with EPUB
+* 2011-07-23 22:23:21 +1000
+  added a sleep when fetching chapters
+* 2011-07-22 07:42:04 +1000
+  added YAML-file option
+
 v0.1302 2011-07-18
 ------------------
 
@@ -242,18 +260,6 @@ v0.03 2010-08-06
   SSHG unknown authors fix
 * 2010-08-06 08:30:48 +1000
   version bump?
-
-v0.0202 2010-08-02
-------------------
-
-* 2010-08-02 19:02:44 +1000
-  applied the same fix to other fields
-
-v0.0201 2010-08-02
-------------------
-
-* 2010-08-02 18:56:44 +1000
-  fixed bug with title parsing
 
 ===================================
 End of changes in the last 365 days
