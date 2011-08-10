@@ -21,6 +21,7 @@ lib/WWW/FetchStory/Fetcher/Owl.pm
 lib/WWW/FetchStory/Fetcher/PetulantPoetess.pm
 lib/WWW/FetchStory/Fetcher/PotionsAndSnitches.pm
 lib/WWW/FetchStory/Fetcher/PotterPlace.pm
+lib/WWW/FetchStory/Fetcher/RestrictedSection.pm
 lib/WWW/FetchStory/Fetcher/SSHGExchange.pm
 lib/WWW/FetchStory/Fetcher/TardisBigBang3.pm
 lib/WWW/FetchStory/Fetcher/Teaspoon.pm

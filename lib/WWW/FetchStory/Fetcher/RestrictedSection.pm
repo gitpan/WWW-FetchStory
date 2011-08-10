@@ -1,12 +1,12 @@
-package WWW::FetchStory::Fetcher::Owl;
+package WWW::FetchStory::Fetcher::RestrictedSection;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Owl::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.15';
 }
 use strict;
 use warnings;
 =head1 NAME
 
-WWW::FetchStory::Fetcher::Owl - fetching module for WWW::FetchStory
+WWW::FetchStory::Fetcher::RestrictedSection - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
@@ -14,11 +14,13 @@ version 0.15
 
 =head1 DESCRIPTION
 
-This is the Owl story-fetching plugin for WWW::FetchStory.
+This is the RestrictedSection story-fetching plugin for WWW::FetchStory.
 
 =cut
 
 our @ISA = qw(WWW::FetchStory::Fetcher);
+
+=head1 METHODS
 
 =head2 info
 
@@ -31,7 +33,7 @@ $info = $self->info();
 sub info {
     my $self = shift;
     
-    my $info = "(http://owl.tauri.org/) A Harry Potter fiction archive.";
+    my $info = "(http://restrictedsection.org) An adult Harry Potter fiction archive.";
 
     return $info;
 } # info
@@ -41,10 +43,7 @@ sub info {
 The priority of this fetcher.  Fetchers with higher priority
 get tried first.  This is useful where there may be a generic
 fetcher for a particular site, and then a more specialized fetcher
-for particular sections of a site.  For example, there may be a
-generic Owl fetcher, and then refinements for particular
-Owl community, such as the sshg_exchange community.
-This works as either a class function or a method.
+for particular sections of a site.
 
 This must be overridden by the specific fetcher class.
 
@@ -57,7 +56,7 @@ $priority = WWW::FetchStory::Fetcher::priority($class);
 sub priority {
     my $class = shift;
 
-    return 1;
+    return 2;
 } # priority
 
 =head2 allow
@@ -77,60 +76,10 @@ sub allow {
     my $self = shift;
     my $url = shift;
 
-    return ($url =~ /owl\.tauri\.org/);
+    return ($url =~ /restrictedsection\.org/);
 } # allow
 
 =head1 Private Methods
-
-=head2 extract_story
-
-Extract the story-content from the fetched content.
-
-    my ($story, $title) = $self->extract_story(content=>$content,
-	title=>$title);
-
-=cut
-
-sub extract_story {
-    my $self = shift;
-    my %args = (
-	content=>'',
-	title=>'',
-	@_
-    );
-
-    my $content = $args{content};
-    my $story = '';
-    my $title = '';
-    if ($content =~ m#<title>OWL\s*::\s*([^<]+)</title>#)
-    {
-	$title = $1;
-    }
-    else
-    {
-	$title = $args{title};
-    }
-
-    if ($content =~ m#<div class=pagehead></div>(.*?)<div align=left><span class=credits>#s)
-    {
-	$story = $1;
-    }
-    elsif ($content =~ m#<body[^>]*>(.*)</body>#is)
-    {
-	$story = $1;
-    }
-
-    if ($story)
-    {
-	$story = $self->tidy_chars($story);
-    }
-    else
-    {
-	$story = $content;
-    }
-
-    return ($story, $title);
-} # extract_story
 
 =head2 parse_toc
 
@@ -168,10 +117,15 @@ sub parse_toc {
 
     my %info = ();
     my $content = $args{content};
+
     my @chapters = ();
     $info{url} = $args{url};
     my $sid='';
-    if ($args{url} =~ m#psid=(\d+)#)
+    if ($args{url} =~ m#file=(\d+)#)
+    {
+	$sid = $1;
+    }
+    elsif ($args{url} =~ m#story=(\d+)#)
     {
 	$sid = $1;
     }
@@ -179,24 +133,31 @@ sub parse_toc {
     {
 	return $self->SUPER::parse_toc(%args);
     }
-
     $info{title} = $self->parse_title(%args);
     $info{author} = $self->parse_author(%args);
     $info{summary} = $self->parse_summary(%args);
     $info{characters} = $self->parse_characters(%args);
-
     $info{universe} = 'Harry Potter';
+    $info{category} = $self->parse_category(%args);
+    $info{rating} = 'Adult';
 
-    # Owl does not have a sane chapter system
-    my $fmt = 'http://owl.tauri.org/stories.php?sid=%d&action=print';
-    while ($content =~ m#stories.php\?sid=(\d+)#sg)
+    if ($args{url} =~ /file.php/) # a single file
     {
-	my $ch_sid = $1;
-	my $ch_url = sprintf($fmt, $ch_sid);
-	warn "chapter=$ch_url\n" if $self->{verbose};
-	push @chapters, $ch_url;
+	@chapters = ($args{url});
+    }
+    else
+    {
+	my $fmt = 'http://www.restrictedsection.org/file.php?file=%d';
+	while ($content =~ m#file\.php\?file=(\d+)'#gs)
+	{
+	    my $ch = $1;
+	    my $ch_url = sprintf($fmt, $ch);
+	    warn "chapter=$ch_url\n" if $self->{verbose};
+	    push @chapters, $ch_url;
+	}
     }
     $info{chapters} = \@chapters;
+    warn "This interface is incomplete.\n";
 
     return %info;
 } # parse_toc
@@ -215,10 +176,22 @@ sub parse_title {
     );
 
     my $content = $args{content};
-    my $title = $self->SUPER::parse_title(%args);
-    if ($title =~ m#OWL\s*::\s*([^<]+)#)
+    my $title = '';
+    if ($content =~ m#<a href="story\.php\?story=\d+">([^<]+)</a>#m)
     {
 	$title = $1;
+    }
+    elsif ($content =~ m#<title>\s*RestrictedSection\.org\s*-\s*Story Info\s*-\s*([^<]+)\s*</title>#is)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<title>\s*RestrictedSection\.org\s*-\s*([^<]+)\s*</title>#is)
+    {
+	$title = $1;
+    }
+    else
+    {
+	$title = $self->SUPER::parse_title(%args);
     }
     return $title;
 } # parse_title
@@ -238,7 +211,7 @@ sub parse_author {
 
     my $content = $args{content};
     my $author = '';
-    if ($content =~ m#by <a href="users.php\?uid=\d+">([^<]+)</a>#s)
+    if ($content =~ m#<a href="author\.php\?author=\d+">([^<]+)</a>#)
     {
 	$author = $1;
     }
@@ -249,31 +222,5 @@ sub parse_author {
     return $author;
 } # parse_author
 
-=head2 parse_summary
-
-Get the summary from the content
-
-=cut
-sub parse_summary {
-    my $self = shift;
-    my %args = (
-	url=>'',
-	content=>'',
-	@_
-    );
-
-    my $content = $args{content};
-    my $summary = '';
-    if ($content =~ m#<span class=summary>([^<]+)</span>#s)
-    {
-	$summary = $1;
-    }
-    else
-    {
-	$summary = $self->SUPER::parse_summary(%args);
-    }
-    return $summary;
-} # parse_summary
-
-1; # End of WWW::FetchStory::Fetcher::Owl
+1; # End of WWW::FetchStory::Fetcher::RestrictedSection
 __END__

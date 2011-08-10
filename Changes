@@ -1,6 +1,14 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.15 2011-08-11
+----------------
+
+* 2011-08-11 09:52:52 +1000
+  version bump
+* 2011-08-11 09:25:05 +1000
+  Added a fetcher for RestrictedSection.org
+
 v0.14 2011-08-02
 ----------------
 
@@ -252,14 +260,6 @@ v0.0301 2010-08-26
   Version bump.
 * 2010-08-26 11:46:32 +1000
   Added fetcher for DigitalQuill.
-
-v0.03 2010-08-06
-----------------
-
-* 2010-08-06 08:43:16 +1000
-  SSHG unknown authors fix
-* 2010-08-06 08:30:48 +1000
-  version bump?
 
 ===================================
 End of changes in the last 365 days
