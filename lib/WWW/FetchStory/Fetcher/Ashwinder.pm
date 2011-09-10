@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Ashwinder;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Ashwinder::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::Ashwinder::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Ashwinder - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -118,7 +118,6 @@ sub parse_toc {
 
     my %info = ();
     my $content = $args{content};
-    my @chapters = ();
     $info{url} = $args{url};
     my $sid='';
     if ($args{url} =~ m#sid=(\d+)#)
@@ -152,6 +151,26 @@ sub parse_toc {
     $info{characters} = 'Hermione Granger, Severus Snape';
     $info{universe} = 'Harry Potter';
 
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
+
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ();
     # Ashwinder does not have a sane chapter system
     my $fmt = 'http://ashwinder.sycophanthex.com/viewstory.php?action=printable&sid=%d';
     if ($content =~ m#&i=1"#s)
@@ -168,10 +187,9 @@ sub parse_toc {
     {
 	@chapters = (sprintf($fmt, $sid));
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_title
 

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Teaspoon;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Teaspoon::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::Teaspoon::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Teaspoon - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -199,7 +199,6 @@ sub parse_toc {
     my %info = ();
     my $content = $args{content};
 
-    my @chapters = ();
     my $fmt = 'http://www.whofic.com/viewstory.php?action=printable&sid=%s&textsize=0&chapter=%d';
 
     $info{url} = $args{url};
@@ -326,7 +325,28 @@ sub parse_toc {
 	$info{characters} = join(', ', sort keys %char_hash);
     }
     $info{universe} = 'Doctor Who';
+    $info{chapters} = $self->parse_chapter_urls(%args,
+	sid=>$sid, fmt=>$fmt);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my $fmt = $args{fmt};
+    my @chapters = ();
     # fortunately Teaspoon has a sane chapter system
     if ($content =~ m#chapter=all#s)
     {
@@ -342,10 +362,9 @@ sub parse_toc {
     {
 	@chapters = (sprintf($fmt, $sid, 1));
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 1; # End of WWW::FetchStory::Fetcher::Teaspoon
 __END__

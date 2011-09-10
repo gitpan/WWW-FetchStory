@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::TardisBigBang3;
 BEGIN {
-  $WWW::FetchStory::Fetcher::TardisBigBang3::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::TardisBigBang3::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::TardisBigBang3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -187,7 +187,26 @@ sub parse_toc {
     {
 	$info{universe} = 'Doctor Who';
     }
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ();
     if ($content =~ m#part=2#)
     {
 	my $fmt = $args{url};
@@ -205,10 +224,8 @@ sub parse_toc {
 	push @chapters, $args{url};
     }
 
-    $info{chapters} = \@chapters;
-
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_author
 

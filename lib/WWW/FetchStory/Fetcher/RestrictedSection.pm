@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::RestrictedSection;
 BEGIN {
-  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::RestrictedSection - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -81,6 +81,51 @@ sub allow {
 
 =head1 Private Methods
 
+=head2 extract_story
+
+Extract the story-content from the fetched content.
+
+    my ($story, $title) = $self->extract_story(content=>$content,
+	title=>$title);
+
+=cut
+
+sub extract_story {
+    my $self = shift;
+    my %args = (
+	content=>'',
+	title=>'',
+	@_
+    );
+    my $content = $args{content};
+
+    my $title = $args{title};
+
+    my $chapter = $self->parse_ch_title(%args);
+    warn "chapter=$chapter\n" if $self->{verbose};
+
+    my $story = '';
+    if ($content =~ m#<td id="page_content">(.*?)</td></tr>\s*<tr class="inverse" id="page_footer">#s)
+    {
+	$story = $1;
+    }
+
+    if ($story)
+    {
+	$story = $self->tidy_chars($story);
+    }
+    else
+    {
+	die "Failed to extract story for $title";
+    }
+
+    my $story_title = "$title: $chapter";
+    $story_title = $title if ($title eq $chapter);
+    $story_title = $title if ($chapter eq '');
+
+    return ($story, $story_title);
+} # extract_story
+
 =head2 parse_toc
 
 Parse the table-of-contents file.
@@ -118,7 +163,6 @@ sub parse_toc {
     my %info = ();
     my $content = $args{content};
 
-    my @chapters = ();
     $info{url} = $args{url};
     my $sid='';
     if ($args{url} =~ m#file=(\d+)#)
@@ -133,14 +177,33 @@ sub parse_toc {
     {
 	return $self->SUPER::parse_toc(%args);
     }
-    $info{title} = $self->parse_title(%args);
+    $info{title} = $self->tidy_chars($self->parse_title(%args));
     $info{author} = $self->parse_author(%args);
     $info{summary} = $self->parse_summary(%args);
     $info{characters} = $self->parse_characters(%args);
     $info{universe} = 'Harry Potter';
     $info{category} = $self->parse_category(%args);
     $info{rating} = 'Adult';
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ();
     if ($args{url} =~ /file.php/) # a single file
     {
 	@chapters = ($args{url});
@@ -156,11 +219,9 @@ sub parse_toc {
 	    push @chapters, $ch_url;
 	}
     }
-    $info{chapters} = \@chapters;
-    warn "This interface is incomplete.\n";
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_title
 
@@ -221,6 +282,24 @@ sub parse_author {
     }
     return $author;
 } # parse_author
+
+=head2 parse_ch_title
+
+Get the chapter title from the content
+
+=cut
+sub parse_ch_title {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $title = $self->SUPER::parse_ch_title(%args);
+    $title = $self->tidy_chars($title);
+    return $title;
+} # parse_ch_title
 
 1; # End of WWW::FetchStory::Fetcher::RestrictedSection
 __END__

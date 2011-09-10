@@ -19,7 +19,7 @@ my %module_build_args = (
     'Kathryn Andersen <perlkat@katspace.org>'
   ],
   'dist_name' => 'WWW-FetchStory',
-  'dist_version' => '0.15',
+  'dist_version' => '0.16',
   'license' => 'perl',
   'module_name' => 'WWW::FetchStory',
   'recommends' => {},
@@ -27,14 +27,17 @@ my %module_build_args = (
   'requires' => {
     'Date::Format' => '0',
     'EBook::EPUB' => '0',
+    'Encode' => '0',
     'Encode::ZapCP1252' => '0',
     'File::Basename' => '0',
-    'File::Copy' => '0',
     'File::Temp' => '0',
     'Getopt::Long' => '2.34',
     'HTML::Entities' => '0',
     'HTML::Strip' => '0',
     'HTML::Tidy::libXML' => '0',
+    'HTTP::Cookies' => '0',
+    'HTTP::Cookies::Mozilla' => '0',
+    'LWP::UserAgent' => '0',
     'Module::Pluggable' => '0',
     'Pod::Usage' => '0',
     'YAML::Any' => '0'

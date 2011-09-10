@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::SSHGExchange;
 BEGIN {
-  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::SSHGExchange - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -122,8 +122,6 @@ sub parse_toc {
 
     my %info = ();
     $info{url} = $args{url};
-
-    my @chapters = ("$args{url}?format=light");
     $info{toc_first} = 1;
 
     my $title = $self->parse_title(%args);
@@ -140,17 +138,35 @@ sub parse_toc {
 
     $info{characters} = "Hermione Granger, Severus Snape";
     $info{universe} = 'Harry Potter';
+    $info{chapters} = $self->parse_chapter_urls(%args);
 
-    while ($content =~ m/href=["'](http:\/\/sshg-mod\.livejournal\.com\/\d+.html)(#cutid\d)?["']>/sg)
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ("$args{url}?format=light");
+    while ($content =~ m/href=["'](http:\/\/sshg-(?:mod|gifts)\.livejournal\.com\/\d+.html)(#cutid\d)?["']>/sg)
     {
 	my $ch_url = $1;
 	warn "chapter=$ch_url\n" if $self->{verbose};
 	push @chapters, "${ch_url}?format=light";
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 1; # End of WWW::FetchStory::Fetcher::SSHGExchange
 __END__

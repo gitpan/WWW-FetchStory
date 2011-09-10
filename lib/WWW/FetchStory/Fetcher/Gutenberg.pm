@@ -1,12 +1,12 @@
-package WWW::FetchStory::Fetcher::PotterPlace;
+package WWW::FetchStory::Fetcher::Gutenberg;
 BEGIN {
-  $WWW::FetchStory::Fetcher::PotterPlace::VERSION = '0.16';
+  $WWW::FetchStory::Fetcher::Gutenberg::VERSION = '0.16';
 }
 use strict;
 use warnings;
 =head1 NAME
 
-WWW::FetchStory::Fetcher::PotterPlace - fetching module for WWW::FetchStory
+WWW::FetchStory::Fetcher::Gutenberg - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
@@ -14,11 +14,13 @@ version 0.16
 
 =head1 DESCRIPTION
 
-This is the PotterPlace story-fetching plugin for WWW::FetchStory.
+This is the Gutenberg story-fetching plugin for WWW::FetchStory.
 
 =cut
 
 our @ISA = qw(WWW::FetchStory::Fetcher);
+
+=head1 METHODS
 
 =head2 info
 
@@ -31,7 +33,7 @@ $info = $self->info();
 sub info {
     my $self = shift;
     
-    my $info = "(http://www.potterplacearchives.com) A Harry Potter fiction archive.";
+    my $info = "(http://www.gutenberg.org) Project Gutenberg; public-domain works";
 
     return $info;
 } # info
@@ -42,8 +44,8 @@ The priority of this fetcher.  Fetchers with higher priority
 get tried first.  This is useful where there may be a generic
 fetcher for a particular site, and then a more specialized fetcher
 for particular sections of a site.  For example, there may be a
-generic PotterPlace fetcher, and then refinements for particular
-PotterPlace community, such as the sshg_exchange community.
+generic Gutenberg fetcher, and then refinements for particular
+Gutenberg community, such as the sshg_exchange community.
 This works as either a class function or a method.
 
 This must be overridden by the specific fetcher class.
@@ -77,7 +79,7 @@ sub allow {
     my $self = shift;
     my $url = shift;
 
-    return ($url =~ /potterplacearchives\.com/);
+    return ($url =~ /gutenberg\.org/);
 } # allow
 
 =head1 Private Methods
@@ -116,25 +118,15 @@ sub parse_toc {
 	@_
     );
 
-    my %info = ();
     my $content = $args{content};
-
+    my %info = ();
     $info{url} = $args{url};
-    my $sid='';
-    if ($args{url} =~ m#sid=(\d+)#)
-    {
-	$sid = $1;
-    }
-    else
-    {
-	return $self->SUPER::parse_toc(%args);
-    }
     $info{title} = $self->parse_title(%args);
     $info{author} = $self->parse_author(%args);
     $info{summary} = $self->parse_summary(%args);
     $info{characters} = $self->parse_characters(%args);
-    $info{universe} = 'Harry Potter';
-    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
+    $info{category} = $self->parse_category(%args);
+    $info{chapters} = $self->parse_chapter_urls(%args);
 
     return %info;
 } # parse_toc
@@ -152,19 +144,11 @@ sub parse_chapter_urls {
 	@_
     );
     my $content = $args{content};
-    my $sid = $args{sid};
     my @chapters = ();
-    # fortunately Potter Place has a sane chapter system
-    my $fmt = 'http://www.potterplacearchives.com/viewstory.php?action=printable&textsize=0&sid=%d&chapter=%d';
-    if ($content =~ m#<span class="label">Chapters:\s*</span>\s*(\d+)#s)
+    if ($args{url} =~ m{http://www.gutenberg.org/ebooks/(\d+)})
     {
-	my $num_ch = $1;
-	for (my $i=1; $i <= $num_ch; $i++)
-	{
-	    my $ch_url = sprintf($fmt, $sid, $i);
-	    warn "chapter=$ch_url\n" if $self->{verbose};
-	    push @chapters, $ch_url;
-	}
+	my $sid = $1;
+	@chapters = ("http://www.gutenberg.org/files/${sid}/${sid}-h/${sid}-h.htm");
     }
 
     return \@chapters;
@@ -185,7 +169,11 @@ sub parse_title {
 
     my $content = $args{content};
     my $title = '';
-    if ($content =~ m#<div id="pagetitle"><a href="viewstory.php\?sid=\d+">([^<]+)</a>#s)
+    if ($content =~ m#<th>Title</th>\s*<td>\s*([^<]+)\s*</td>#s)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<h1 class="icon_title">\s*(.*?)\s*by\s[^<]+\s*</h1>#s)
     {
 	$title = $1;
     }
@@ -193,8 +181,36 @@ sub parse_title {
     {
 	$title = $self->SUPER::parse_title(%args);
     }
+    $title =~ s/\s+$//;
     return $title;
 } # parse_title
+
+=head2 parse_ch_title
+
+Get the chapter title from the content
+
+=cut
+sub parse_ch_title {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $title = '';
+    if ($content =~ m#Title: (.*)$#m)
+    {
+	$title = $1;
+    }
+    else
+    {
+	$title = $self->SUPER::parse_title(%args);
+    }
+    $title =~ s/\s+$//;
+    return $title;
+} # parse_ch_title
 
 =head2 parse_author
 
@@ -211,7 +227,7 @@ sub parse_author {
 
     my $content = $args{content};
     my $author = '';
-    if ($content =~ m#\s*by\s*<a href="viewuser.php\?uid=\d+">([^<]+)</a></div>#s)
+    if ($content =~ m#<h1 class="icon_title">\s*[^<]+\s*by\s+([^<]+)\s*</h1>#s)
     {
 	$author = $1;
     }
@@ -219,15 +235,16 @@ sub parse_author {
     {
 	$author = $self->SUPER::parse_author(%args);
     }
+    $author =~ s/\s+$//;
     return $author;
 } # parse_author
 
-=head2 parse_summary
+=head2 parse_category
 
-Get the summary from the content
+Get the category from the content
 
 =cut
-sub parse_summary {
+sub parse_category {
     my $self = shift;
     my %args = (
 	url=>'',
@@ -236,17 +253,45 @@ sub parse_summary {
     );
 
     my $content = $args{content};
-    my $summary = '';
-    if ($content =~ m#<span class="label">Summary:\s*</span>\s*(.*?)\s*<br#s)
+    my $category = '';
+    my %cats = ();
+    while ($content =~ m#<th>Subject</th>\s*<td[^>]*>\s*<a [^>]+>\s+([^<]+)\s+</a>\s*</td>#sg)
     {
-	$summary = $1;
+	my $subjects = $1;
+	if ($subjects !~ /Fictitious character/)
+	{
+	    my @subs = split(/ -- /, $subjects);
+	    if (@subs)
+	    {
+		foreach my $sub (@subs)
+		{
+		    # some subjects need even more parsing
+		    if ($sub =~ m#(.*?) \((.*)\)#)
+		    {
+			my $sub1 = $1;
+			my $sub2 = $2;
+			$cats{$sub2} = 1;
+			$sub = $sub1;
+		    }
+		    if ($sub =~ m#(.*?), (.*)#)
+		    {
+			$sub = "$2 $1";
+		    }
+		    $cats{$sub} = 1;
+		}
+	    }
+	    else
+	    {
+		$cats{$subjects} = 1;
+	    }
+	}
     }
-    else
+    if (%cats)
     {
-	$summary = $self->SUPER::parse_summary(%args);
+	$category = join(', ', sort keys %cats);
     }
-    return $summary;
-} # parse_summary
+    return $category;
+} # parse_category
 
 =head2 parse_characters
 
@@ -263,23 +308,37 @@ sub parse_characters {
 
     my $content = $args{content};
     my $characters = '';
-    if ($content =~ m#<span class="label">Characters:\s*</span>(.*?)<br#s)
+    my %chars = ();
+    while ($content =~ m#<th>Subject</th>\s*<td[^>]*>\s*<a [^>]+>\s+([^<]+)\s+</a>\s*</td>#sg)
     {
-	my $chars_str = $1;
-	my @chars = ();
-	while ($chars_str =~ m#charid=\d*'>([^<]+)</a>#sg)
+	my $subjects = $1;
+	if ($subjects =~ /Fictitious character/)
 	{
-	    my $character = $1;
-	    push @chars, $character;
+	    my @subs = split(/ -- /, $subjects);
+	    if (@subs)
+	    {
+		foreach my $sub (@subs)
+		{
+		    # only look at the characters
+		    if ($sub =~ m#(.*?) \(Fictitious character\)#)
+		    {
+			my $sub1 = $1;
+			if ($sub1 =~ m#(.*?), (.*)#)
+			{
+			    $sub1 = "$2 $1";
+			}
+			$chars{$sub1} = 1;
+		    }
+		}
+	    }
 	}
-	$characters = join(', ', @chars);
     }
-    else
+    if (%chars)
     {
-	$characters = $self->SUPER::parse_characters(%args);
+	$characters = join(', ', sort keys %chars);
     }
     return $characters;
 } # parse_characters
 
-1; # End of WWW::FetchStory::Fetcher::PotterPlace
+1; # End of WWW::FetchStory::Fetcher::Gutenberg
 __END__

@@ -18,15 +18,18 @@ name: WWW-FetchStory
 requires:
   Date::Format: 0
   EBook::EPUB: 0
+  Encode: 0
   Encode::ZapCP1252: 0
   File::Basename: 0
-  File::Copy: 0
   File::Temp: 0
   Getopt::Long: 2.34
   HTML::Entities: 0
   HTML::Strip: 0
   HTML::Tidy::libXML: 0
+  HTTP::Cookies: 0
+  HTTP::Cookies::Mozilla: 0
+  LWP::UserAgent: 0
   Module::Pluggable: 0
   Pod::Usage: 0
   YAML::Any: 0
-version: 0.15
+version: 0.16

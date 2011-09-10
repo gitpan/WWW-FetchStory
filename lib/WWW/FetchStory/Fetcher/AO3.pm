@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 BEGIN {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -79,7 +79,7 @@ sub allow {
     my $self = shift;
     my $url = shift;
 
-    return ($url =~ /archiveofourown\.org/);
+    return ($url =~ /archiveofourown\.org$/ || $url =~ /ao3\.org$/);
 } # allow
 
 =head1 Private Methods
@@ -140,16 +140,33 @@ sub parse_toc {
     $info{universe} = $self->parse_universe(%args);
     $info{category} = $self->parse_category(%args);
     $info{rating} = $self->parse_rating(%args);
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
     my @chapters = ();
     if ($content =~ m!href="(/downloads/\w+/$sid/[^.]+\.html)"!)
     {
 	@chapters = ("http://archiveofourown.org$1");
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_title
 

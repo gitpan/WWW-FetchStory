@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::DracoAndGinny;
 BEGIN {
-  $WWW::FetchStory::Fetcher::DracoAndGinny::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::DracoAndGinny::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::DracoAndGinny - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -137,7 +137,26 @@ sub parse_toc {
     $info{summary} = $self->parse_summary(%args,sid=>$sid);
     $info{characters} = "Draco Malfoy, Ginny Weasley";
     $info{universe} = 'Harry Potter';
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ();
     my $fmt = 'http://www.dracoandginny.com/viewstory.php?action=printable&sid=%s&textsize=0&chapter=%d';
 
     # fortunately DracoAndGinny has a sane chapter system
@@ -155,10 +174,9 @@ sub parse_toc {
     {
 	@chapters = (sprintf($fmt, $sid, 1));
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_title
 

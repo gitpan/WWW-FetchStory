@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::TwistingHellmouth;
 BEGIN {
-  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::TwistingHellmouth - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -131,7 +131,24 @@ sub parse_toc {
     {
 	$info{complete} = $1;
     }
+    $info{chapters} = $self->parse_chapter_urls(%args);
 
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
     my @chapters = ($args{url});
     if ($args{url} =~ m{http://www.tthfanfic.org/Story-(\d+)})
     {
@@ -139,10 +156,9 @@ sub parse_toc {
 	@chapters =
 	("http://www.tthfanfic.org/wholestory.php?no=${sid}&format=print");
     }
-    $info{chapters} = \@chapters;
 
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 1; # End of WWW::FetchStory::Fetcher::TwistingHellmouth
 __END__

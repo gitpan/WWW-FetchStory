@@ -5,6 +5,7 @@ MANIFEST
 META.yml
 README.pod
 dist.ini
+lib/HTTP/Cookies/Wget.pm
 lib/WWW/FetchStory.pm
 lib/WWW/FetchStory/Fetcher.pm
 lib/WWW/FetchStory/Fetcher/AO3.pm
@@ -12,9 +13,10 @@ lib/WWW/FetchStory/Fetcher/Ashwinder.pm
 lib/WWW/FetchStory/Fetcher/Default.pm
 lib/WWW/FetchStory/Fetcher/DigitalQuill.pm
 lib/WWW/FetchStory/Fetcher/DracoAndGinny.pm
-lib/WWW/FetchStory/Fetcher/DreamWidth.pm
+lib/WWW/FetchStory/Fetcher/Dreamwidth.pm
 lib/WWW/FetchStory/Fetcher/FanfictionNet.pm
 lib/WWW/FetchStory/Fetcher/FictionAlley.pm
+lib/WWW/FetchStory/Fetcher/Gutenberg.pm
 lib/WWW/FetchStory/Fetcher/HPAdultFanfiction.pm
 lib/WWW/FetchStory/Fetcher/LiveJournal.pm
 lib/WWW/FetchStory/Fetcher/Owl.pm

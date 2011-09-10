@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::HPAdultFanfiction;
 BEGIN {
-  $WWW::FetchStory::Fetcher::HPAdultFanfiction::VERSION = '0.15';
+  $WWW::FetchStory::Fetcher::HPAdultFanfiction::VERSION = '0.16';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::HPAdultFanfiction - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 DESCRIPTION
 
@@ -100,6 +100,61 @@ sub allow {
 
 =head1 Private Methods
 
+=head2 extract_story
+
+Extract the story-content from the fetched content.
+
+    my ($story, $title) = $self->extract_story(content=>$content,
+	title=>$title);
+
+=cut
+
+sub extract_story {
+    my $self = shift;
+    my %args = (
+	content=>'',
+	title=>'',
+	@_
+    );
+    my $content = $args{content};
+
+    my $title = $args{title};
+
+    my $chapter = $self->parse_ch_title(%args);
+    warn "chapter=$chapter\n" if $self->{verbose};
+
+    my $author = $self->parse_author(%args);
+    warn "author=$author\n" if $self->{verbose};
+
+    my $story = '';
+    if ($content =~ m!<td colspan="3" bgcolor="F4EBCC">\s*<font color="#003333">Disclaimer:[^<]+</font>\s*</td>\s*</tr>\s*<tr>\s*<td colspan="3">\s*<p>&nbsp;</p>\s*</td>\s*</tr>\s*<tr>\s*<td colspan="3" bgcolor="F4EBCC">\s*(.*?)<tr class='catdis'>!s)
+    {
+	$story = $1;
+    }
+
+    if ($story)
+    {
+	$story = $self->tidy_chars($story);
+    }
+    else
+    {
+	die "Failed to extract story for $title";
+    }
+
+    my $story_title = "$title: $chapter";
+    $story_title = $title if ($title eq $chapter);
+    $story_title = $title if ($chapter eq '');
+
+    my $out = '';
+    if ($story)
+    {
+	$out .= "<h1>$story_title</h1>\n";
+	$out .= "<p>by $author</p>\n";
+	$out .= "$story";
+    }
+    return ($out, $story_title);
+} # extract_story
+
 =head2 parse_toc
 
 Parse the table-of-contents file.
@@ -152,8 +207,48 @@ sub parse_toc {
     $info{author} = $self->parse_author(%args);
     $info{summary} = $self->parse_summary(%args);
     $info{characters} = $self->parse_characters(%args);
+    $info{category} = $self->parse_category(%args);
     $info{universe} = 'Harry Potter';
+    $info{rating} = 'Adult';
 
+    # the summary is on the Author page!
+    my $auth_id = '';
+    if ($content =~ m/Author:\s*<a href='authors\.php\?no=(\d+)'>/s)
+    {
+	$auth_id = $1;
+    }
+    if ($auth_id and $sid)
+    {
+	my $auth_page = $self->get_page("http://hp.adultfanfiction.net/authors.php?no=${auth_id}");
+	if ($auth_page =~ m#<a href='story\.php\?no=${sid}'>[^<]+</a><br>\s*([^<]+)<br>#s)
+	{
+	    $info{summary} = $1;
+	}
+    }
+    if (!$info{summary})
+    {
+	$info{summary} = $self->SUPER::parse_summary(%args);
+    }
+    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
+
+    return %info;
+} # parse_toc
+
+=head2 parse_chapter_urls
+
+Figure out the URLs for the chapters of this story.
+
+=cut
+sub parse_chapter_urls {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+    my $content = $args{content};
+    my $sid = $args{sid};
+    my @chapters = ();
     my $fmt = 'http://hp.adultfanfiction.net/story.php?no=%d&chapter=%d';
     my $max_chapter = 0;
     while ($content =~ m#<option value='story\.php\?no=${sid}&chapter=(\d+)'#gs)
@@ -171,11 +266,8 @@ sub parse_toc {
 	push @chapters, $ch_url;
     }
 
-    $info{chapters} = \@chapters;
-    warn "This interface is incomplete.\n";
-
-    return %info;
-} # parse_toc
+    return \@chapters;
+} # parse_chapter_urls
 
 =head2 parse_title
 
@@ -200,6 +292,7 @@ sub parse_title {
     {
 	$title = $self->SUPER::parse_title(%args);
     }
+    $title =~ s/\s+$//;
     return $title;
 } # parse_title
 
@@ -228,6 +321,85 @@ sub parse_author {
     }
     return $author;
 } # parse_author
+
+=head2 parse_characters
+
+Get the characters from the content
+
+=cut
+sub parse_characters {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $characters = '';
+    if ($content =~ m#<a href="main\.php\?list=\d+">\s*(\w+)/(\w+)</a>#)
+    {
+	$characters = $1 . ', ' . $2;
+	$characters =~ s/Arthur/Arthur Weasley/;
+	$characters =~ s/Bill/Bill Weasley/;
+	$characters =~ s/Charlie/Charlie Weasley/;
+	$characters =~ s/Draco/Draco Malfoy/;
+	$characters =~ s/Dudley/Dudley Dursley/;
+	$characters =~ s/Fred/Fred Weasley/;
+	$characters =~ s/George/George Weasley/;
+	$characters =~ s/Ginny/Ginny Weasley/;
+	$characters =~ s/Harry/Harry Potter/;
+	$characters =~ s/Hermione/Hermione Granger/;
+	$characters =~ s/James/James Potter/;
+	$characters =~ s/Lavender/Lavender Brown/;
+	$characters =~ s/Lavendar/Lavender Brown/;
+	$characters =~ s/Lily/Lily Evans/;
+	$characters =~ s/Lucius/Lucius Malfoy/;
+	$characters =~ s/Luna/Luna Lovegood/;
+	$characters =~ s/McGonagall/Minerva McGonagall/;
+	$characters =~ s/Molly/Molly Weasley/;
+	$characters =~ s/Narcissa/Narcissa Malfoy/;
+	$characters =~ s/Neville/Neville Longbottom/;
+	$characters =~ s/Remus/Remus Lupin/;
+	$characters =~ s/Ron/Ron Weasley/;
+	$characters =~ s/Snape/Severus Snape/;
+    }
+    else
+    {
+	$characters = $self->SUPER::parse_characters(%args);
+    }
+    return $characters;
+} # parse_characters
+
+=head2 parse_ch_title
+
+Get the chapter title from the content
+
+=cut
+sub parse_ch_title {
+    my $self = shift;
+    my %args = (
+	url=>'',
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $title = '';
+    if ($content =~ m#^Chapter\s*(\d+:[^<]+)<br#m)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<option[^>]+selected>([^<]+)</option>#s)
+    {
+	$title = $1;
+    }
+    else
+    {
+	$title = $self->parse_title(%args);
+    }
+    return $title;
+} # parse_ch_title
 
 1; # End of WWW::FetchStory::Fetcher::HPAdultFanfiction
 __END__

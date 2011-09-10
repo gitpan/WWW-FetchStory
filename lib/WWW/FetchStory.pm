@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package WWW::FetchStory;
 BEGIN {
-  $WWW::FetchStory::VERSION = '0.15';
+  $WWW::FetchStory::VERSION = '0.16';
 }
 =head1 NAME
 
@@ -10,7 +10,7 @@ WWW::FetchStory - Fetch a story from a fiction website
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
@@ -117,6 +117,7 @@ sub fetch_story ($%) {
     }
     if (defined $fetcher)
     {
+	$fetcher->init(%{$self});
 	return $fetcher->fetch(%args);
     }
 
