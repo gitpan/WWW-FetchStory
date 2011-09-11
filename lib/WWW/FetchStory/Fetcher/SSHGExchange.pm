@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::SSHGExchange;
 BEGIN {
-  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.16';
+  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.1601';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::SSHGExchange - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.16
+version 0.1601
 
 =head1 DESCRIPTION
 
@@ -158,7 +158,7 @@ sub parse_chapter_urls {
     my $content = $args{content};
     my $sid = $args{sid};
     my @chapters = ("$args{url}?format=light");
-    while ($content =~ m/href=["'](http:\/\/sshg-(?:mod|gifts)\.livejournal\.com\/\d+.html)(#cutid\d)?["']>/sg)
+    while ($content =~ m/href=["'](http:\/\/sshg-(?:mod|gifts)\.livejournal\.com\/\d+.html)/sg)
     {
 	my $ch_url = $1;
 	warn "chapter=$ch_url\n" if $self->{verbose};

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::Ashwinder;
 BEGIN {
-  $WWW::FetchStory::Fetcher::Ashwinder::VERSION = '0.16';
+  $WWW::FetchStory::Fetcher::Ashwinder::VERSION = '0.1601';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::Ashwinder - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.16
+version 0.1601
 
 =head1 DESCRIPTION
 
