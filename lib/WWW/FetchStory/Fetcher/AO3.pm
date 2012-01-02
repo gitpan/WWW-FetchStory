@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1702';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1703';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1702
+version 0.1703
 
 =head1 DESCRIPTION
 
@@ -361,8 +361,7 @@ sub parse_category {
     if ($content =~ m!Additional Tags:\s*</dt>\s*<dd class="freeform tags">\s*<ul[^>]*>\s*(.*?)\s*</ul>!s)
     {
 	my $categories = $1;
-	print STDERR "categories=$categories\n";
-	my @cats = split(/,/, $categories);
+	my @cats = split(/<li>/, $categories);
 	my @categories = ();
 	foreach my $cat (@cats)
 	{
