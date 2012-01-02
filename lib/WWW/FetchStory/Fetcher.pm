@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1703';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1704';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1703
+version 0.1704
 
 =head1 DESCRIPTION
 
@@ -282,6 +282,7 @@ sub fetch {
 	my @ch_urls = @{$story_info{chapters}};
 	my $one_chapter = (@ch_urls == 1);
 	my $first_chapter_is_toc = $story_info{toc_first};
+	delete $story_info{toc_first};
 	my @ch_titles = ();
 	my @ch_wc = ();
 	my $count = (($one_chapter or $first_chapter_is_toc) ? 0 : 1);
