@@ -1,6 +1,6 @@
 package HTTP::Cookies::Wget;
-BEGIN {
-  $HTTP::Cookies::Wget::VERSION = '0.1601';
+{
+  $HTTP::Cookies::Wget::VERSION = '0.17';
 }
 
 use strict;
@@ -89,7 +89,7 @@ HTTP::Cookies::Wget - access to Wget cookies files
 
 =head1 VERSION
 
-version 0.1601
+version 0.17
 
 =head1 SYNOPSIS
 

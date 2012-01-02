@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::SSHGExchange;
-BEGIN {
-  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.1601';
+{
+  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.17';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::SSHGExchange - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1601
+version 0.17
 
 =head1 DESCRIPTION
 
@@ -138,6 +138,7 @@ sub parse_toc {
 
     $info{characters} = "Hermione Granger, Severus Snape";
     $info{universe} = 'Harry Potter';
+    $info{recipient} = $self->parse_recipient(%args);
     $info{chapters} = $self->parse_chapter_urls(%args);
 
     return %info;

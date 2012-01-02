@@ -1,6 +1,22 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.17 2012-01-02
+----------------
+
+* 2012-01-02 19:45:45 +1100
+  version bump
+* 2012-01-02 19:42:36 +1100
+  Fixed bug with AO3, plus EPUB fetching.
+* 2011-11-12 13:41:38 +1100
+  tweaking Dist::Zilla stuff
+* 2011-11-12 13:38:19 +1100
+  added recipient for SSHG exchange
+* 2011-09-29 09:20:16 +1000
+  a bit more verbose verbose output
+* 2011-09-20 11:55:00 +1000
+  tweak to allow wget options
+
 v0.1601 2011-09-11
 ------------------
 
@@ -206,28 +222,6 @@ v0.08 2011-02-27
   Tweaking info and parsing summary.
 * 2011-02-27 16:57:36 +1100
   Improved information.
-
-v0.07 2010-12-18
-----------------
-
-* 2010-12-18 17:05:11 +1100
-  version bump
-* 2010-12-18 17:04:04 +1100
-  added fetcher for Potter Place
-
-v0.06 2010-12-07
-----------------
-
-* 2010-12-07 10:21:26 +1100
-  modifying fetching for multi urls
-
-v0.05 2010-10-05
-----------------
-
-* 2010-10-05 09:12:02 +1100
-  Version bump.
-* 2010-10-05 09:03:30 +1100
-  New Fetcher for dracoandginny.com archive.
 
 ===================================
 End of changes in the last 365 days

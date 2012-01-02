@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::RestrictedSection;
-BEGIN {
-  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.1601';
+{
+  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.17';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::RestrictedSection - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.1601
+version 0.17
 
 =head1 DESCRIPTION
 
