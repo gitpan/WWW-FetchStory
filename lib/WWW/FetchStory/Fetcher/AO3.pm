@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.17';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1701';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.17
+version 0.1701
 
 =head1 DESCRIPTION
 
@@ -142,6 +142,7 @@ sub parse_toc {
     $info{rating} = $self->parse_rating(%args);
     $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
     $info{epub_url} = $self->parse_epub_url(%args, sid=>$sid);
+    $info{wordcount} = $self->parse_wordcount(%args);
 
     return %info;
 } # parse_toc
@@ -239,6 +240,7 @@ sub parse_author {
     {
 	$author = $self->SUPER::parse_author(%args);
     }
+    $author =~ s/_/ /g;
     return $author;
 } # parse_author
 
@@ -254,7 +256,7 @@ sub parse_summary {
     my $content = $args{content};
 
     my $summary = '';
-    if ($content =~ m!<h3>Summary:</h3>\s*<blockquote class="userstuff"><p>([^<]+)</p></blockquote>!s)
+    if ($content =~ m!<h3[^>]*>Summary:</h3>\s*<blockquote class="userstuff"><p>([^<]+)</p></blockquote>!s)
     {
 	$summary = $1;
     }
@@ -264,6 +266,25 @@ sub parse_summary {
     }
     return $summary;
 } # parse_summary
+
+=head2 parse_wordcount
+
+Get the wordcount.
+
+=cut
+sub parse_wordcount {
+    my $self = shift;
+    my %args = @_;
+
+    my $content = $args{content};
+
+    my $words = '';
+    if ($content =~ m!\((\d+) words\)!m)
+    {
+	$words = $1;
+    }
+    return $words;
+} # parse_wordcount
 
 =head2 parse_characters
 
@@ -337,9 +358,10 @@ sub parse_category {
     my $content = $args{content};
 
     my $category = '';
-    if ($content =~ m!<dt class="freeform">\s*Additional Tags:\s*</dt>\s*<dd class="freeform">\s*<ul>\s*(.*?)\s*</ul>!s)
+    if ($content =~ m!Additional Tags:\s*</dt>\s*<dd class="freeform tags">\s*<ul[^>]*>\s*(.*?)\s*</ul>!s)
     {
 	my $categories = $1;
+	print STDERR "categories=$categories\n";
 	my @cats = split(/,/, $categories);
 	my @categories = ();
 	foreach my $cat (@cats)

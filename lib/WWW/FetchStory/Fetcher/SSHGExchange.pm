@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::SSHGExchange;
 {
-  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.17';
+  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.1701';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::SSHGExchange - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.17
+version 0.1701
 
 =head1 DESCRIPTION
 
