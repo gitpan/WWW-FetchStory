@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package WWW::FetchStory;
 {
-  $WWW::FetchStory::VERSION = '0.1704';
+  $WWW::FetchStory::VERSION = '0.18';
 }
 =head1 NAME
 
@@ -10,7 +10,7 @@ WWW::FetchStory - Fetch a story from a fiction website
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ version 0.1704
 
     my $obj = WWW::FetchStory->new(%args);
 
-    my %story_info = $obj->fetch_story(url=>$url);
+    my %story_info = $obj->fetch_story(urls=>\@urls);
 
 =head1 DESCRIPTION
 
@@ -84,7 +84,7 @@ sub new {
 =head2 fetch_story
 
     my %story_info = fetch_story(
-				 url=>$url,
+				 urls=>\@urls,
 				 verbose=>0,
 				 toc=>0);
 
@@ -92,18 +92,19 @@ sub new {
 sub fetch_story ($%) {
     my $self = shift;
     my %args = (
-	url=>'',
+	urls=>undef,
 	verbose=>0,
 	toc=>0,
 	@_
     );
 
     my $fetcher;
+    my $first_url = $args{urls}[0];
     foreach my $pri (reverse sort keys %{$self->{fetch_pri}})
     {
 	foreach my $fe (@{$self->{fetch_pri}->{$pri}})
 	{
-	    if ($fe->allow($args{url}))
+	    if ($fe->allow($first_url))
 	    {
 		$fetcher = $fe;
 		warn "Fetcher($pri): ", $fe->name(), "\n" if $args{verbose};
@@ -132,7 +133,6 @@ sub fetch_story ($%) {
 sub list_fetchers ($%) {
     my $self = shift;
     my %args = (
-	url=>'',
 	verbose=>0,
 	@_
     );

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::RestrictedSection;
 {
-  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::RestrictedSection::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::RestrictedSection - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -102,7 +102,7 @@ sub extract_story {
     my $title = $args{title};
 
     my $chapter = $self->parse_ch_title(%args);
-    warn "chapter=$chapter\n" if $self->{verbose};
+    warn "chapter=$chapter\n" if ($self->{verbose} > 1);
 
     my $story = '';
     if ($content =~ m#<td id="page_content">(.*?)</td></tr>\s*<tr class="inverse" id="page_footer">#s)
@@ -131,7 +131,8 @@ sub extract_story {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -139,8 +140,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -204,19 +206,27 @@ sub parse_chapter_urls {
     my $content = $args{content};
     my $sid = $args{sid};
     my @chapters = ();
-    if ($args{url} =~ /file.php/) # a single file
+    if (defined $args{urls})
     {
-	@chapters = ($args{url});
+	@chapters = @{$args{urls}};
     }
-    else
+    if (@chapters == 1)
     {
-	my $fmt = 'http://www.restrictedsection.org/file.php?file=%d';
-	while ($content =~ m#file\.php\?file=(\d+)'#gs)
+	if ($args{url} =~ /file.php/) # a single file
 	{
-	    my $ch = $1;
-	    my $ch_url = sprintf($fmt, $ch);
-	    warn "chapter=$ch_url\n" if $self->{verbose};
-	    push @chapters, $ch_url;
+	    @chapters = ($args{url});
+	}
+	else
+	{
+	    @chapters = ();
+	    my $fmt = 'http://www.restrictedsection.org/file.php?file=%d';
+	    while ($content =~ m#file\.php\?file=(\d+)'#gs)
+	    {
+		my $ch = $1;
+		my $ch_url = sprintf($fmt, $ch);
+		warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
+		push @chapters, $ch_url;
+	    }
 	}
     }
 

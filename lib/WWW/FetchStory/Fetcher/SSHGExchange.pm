@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::SSHGExchange;
 {
-  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::SSHGExchange::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::SSHGExchange - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -89,7 +89,8 @@ sub allow {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -97,8 +98,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -158,12 +160,23 @@ sub parse_chapter_urls {
     );
     my $content = $args{content};
     my $sid = $args{sid};
-    my @chapters = ("$args{url}?format=light");
-    while ($content =~ m/href=["'](http:\/\/sshg-(?:mod|gifts)\.livejournal\.com\/\d+.html)/sg)
+    my @chapters = ();
+    if (defined $args{urls})
     {
-	my $ch_url = $1;
-	warn "chapter=$ch_url\n" if $self->{verbose};
-	push @chapters, "${ch_url}?format=light";
+	@chapters = @{$args{urls}};
+	for (my $i = 0; $i < @chapters; $i++)
+	{
+	    $chapters[$i] = sprintf('%s?format=light', $chapters[$i]);
+	}
+    }
+    if (@chapters == 1)
+    {
+	while ($content =~ m/href=["'](http:\/\/sshg-(?:mod|gifts)\.livejournal\.com\/\d+.html)/sg)
+	{
+	    my $ch_url = $1;
+	    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
+	    push @chapters, "${ch_url}?format=light";
+	}
     }
 
     return \@chapters;

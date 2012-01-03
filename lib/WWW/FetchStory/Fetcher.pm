@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -89,7 +89,7 @@ sub init {
 	    keep_alive => 1,
 	    env_proxy => 1,
 	);
-	$self->{user_agent}->show_progress($self->{verbose});
+	$self->{user_agent}->show_progress($self->{verbose} > 0);
 	if ($self->{firefox_cookies} and -f $self->{firefox_cookies})
 	{
 	    my $cookies = HTTP::Cookies::Mozilla->new(
@@ -213,7 +213,7 @@ sub allow {
 Fetch the story, with the given options.
 
     %story_info = $obj->fetch(
-	url=>$url,
+	urls=>\@urls,
 	basename=>$basename,
 	toc=>0,
 	yaml=>0);
@@ -237,9 +237,10 @@ Build a table-of-contents file if this is true.
 
 Build a YAML file with meta-data about this story if this is true.
 
-=item url
+=item urls
 
-The URL of the story.  The page is scraped for meta-information about the story,
+The URLs of the story.
+The first page is scraped for meta-information about the story,
 including the title and author.  Site-specific Fetcher plugins can find additional
 information, including the URLs of all the chapters in a multi-chapter story.
 
@@ -250,16 +251,17 @@ information, including the URLs of all the chapters in a multi-chapter story.
 sub fetch {
     my $self = shift;
     my %args = (
-	url=>'',
+	urls=>undef,
 	basename=>'',
 	@_
     );
 
     $self->{verbose} = $args{verbose};
 
-    my $toc_content = $self->get_toc($args{url});
-    my %story_info = $self->parse_toc(content=>$toc_content,
-	url=>$args{url});
+    my $first_url = $args{urls}[0];
+    my $toc_content = $self->get_toc($first_url);
+    my %story_info = $self->parse_toc(%args, content=>$toc_content,
+	url=>$first_url);
 
     my $basename = ($args{basename}
 		    ? $args{basename}
@@ -275,7 +277,7 @@ sub fetch {
 	$story_info{storyfiles} = [$epub_info{filename}];
 
 	$self->derive_values(info=>\%story_info);
-	warn Dump(\%story_info) if $self->{verbose};
+	warn Dump(\%story_info) if ($self->{verbose} > 1);
     }
     else
     {
@@ -302,7 +304,7 @@ sub fetch {
 	}
 	$self->derive_values(info=>\%story_info);
 
-	warn Dump(\%story_info) if $self->{verbose};
+	warn Dump(\%story_info) if ($self->{verbose} > 1);
 
 	$story_info{storyfiles} = \@storyfiles;
 	$story_info{chapter_titles} = \@ch_titles;
@@ -525,7 +527,7 @@ sub get_page {
     if ($self->{use_wget})
     {
 	my $cmd = sprintf("%s -O %s '%s'", $self->{wget_cmd}, '-', $url);
-	warn "$cmd\n" if $self->{verbose};
+	warn "$cmd\n" if ($self->{verbose} > 1);
 	my $ifh;
 	open($ifh, "${cmd}|") or die "FAILED $cmd: $!";
 	while(<$ifh>)
@@ -563,7 +565,8 @@ Parse the table-of-contents file.
 This must be overridden by the specific fetcher class.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -571,8 +574,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -619,7 +623,16 @@ sub parse_chapter_urls {
 	content=>'',
 	@_
     );
-    my @chapters = ($args{url});
+
+    my @chapters = ();
+    if (defined $args{urls})
+    {
+	@chapters = @{$args{urls}};
+    }
+    else
+    {
+	@chapters = ($args{url});
+    }
 
     return \@chapters;
 } # parse_chapter_urls
@@ -648,7 +661,6 @@ Get the title from the content
 sub parse_title {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -696,7 +708,6 @@ Get the chapter title from the content
 sub parse_ch_title {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -724,7 +735,6 @@ Get the author from the content
 sub parse_author {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -758,7 +768,6 @@ Get the summary from the content
 sub parse_summary {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -809,7 +818,6 @@ Get the characters from the content
 sub parse_characters {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -848,7 +856,6 @@ Get the universe/fandom from the content
 sub parse_universe {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -870,7 +877,6 @@ Get the recipient from the content
 sub parse_recipient {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -896,7 +902,6 @@ Get the categories from the content
 sub parse_category {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -923,7 +928,6 @@ Get the rating from the content
 sub parse_rating {
     my $self = shift;
     my %args = (
-	url=>'',
 	content=>'',
 	@_
     );
@@ -1018,7 +1022,7 @@ sub get_chapter {
     my $content = $self->get_page($args{url});
     my ($story, $title) = $self->extract_story(%args, content=>$content);
 
-    my $chapter_title = $self->parse_ch_title(content=>$content, url=>$args{url});
+    my $chapter_title = $self->parse_ch_title(content=>$content);
     $chapter_title = $title if !$chapter_title;
 
     my $html = $self->tidy(story=>$story, title=>$chapter_title);

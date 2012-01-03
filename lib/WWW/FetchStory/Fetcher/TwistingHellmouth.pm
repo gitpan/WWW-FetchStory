@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::TwistingHellmouth;
 {
-  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::TwistingHellmouth - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -89,7 +89,8 @@ sub allow {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -97,8 +98,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -149,12 +151,19 @@ sub parse_chapter_urls {
 	@_
     );
     my $content = $args{content};
-    my @chapters = ($args{url});
-    if ($args{url} =~ m{http://www.tthfanfic.org/Story-(\d+)})
+    my @chapters = ();
+    if (defined $args{urls})
     {
-	my $sid = $1;
-	@chapters =
-	("http://www.tthfanfic.org/wholestory.php?no=${sid}&format=print");
+	@chapters = @{$args{urls}};
+    }
+    if (@chapters == 1)
+    {
+	if ($args{url} =~ m{http://www.tthfanfic.org/Story-(\d+)})
+	{
+	    my $sid = $1;
+	    @chapters =
+	    ("http://www.tthfanfic.org/wholestory.php?no=${sid}&format=print");
+	}
     }
 
     return \@chapters;

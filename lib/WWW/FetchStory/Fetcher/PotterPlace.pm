@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::PotterPlace;
 {
-  $WWW::FetchStory::Fetcher::PotterPlace::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::PotterPlace::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::PotterPlace - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -87,7 +87,8 @@ sub allow {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -95,8 +96,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -154,16 +156,24 @@ sub parse_chapter_urls {
     my $content = $args{content};
     my $sid = $args{sid};
     my @chapters = ();
-    # fortunately Potter Place has a sane chapter system
-    my $fmt = 'http://www.potterplacearchives.com/viewstory.php?action=printable&textsize=0&sid=%d&chapter=%d';
-    if ($content =~ m#<span class="label">Chapters:\s*</span>\s*(\d+)#s)
+    if (defined $args{urls})
     {
-	my $num_ch = $1;
-	for (my $i=1; $i <= $num_ch; $i++)
+	@chapters = @{$args{urls}};
+    }
+    if (@chapters == 1)
+    {
+	# fortunately Potter Place has a sane chapter system
+	my $fmt = 'http://www.potterplacearchives.com/viewstory.php?action=printable&textsize=0&sid=%d&chapter=%d';
+	if ($content =~ m#<span class="label">Chapters:\s*</span>\s*(\d+)#s)
 	{
-	    my $ch_url = sprintf($fmt, $sid, $i);
-	    warn "chapter=$ch_url\n" if $self->{verbose};
-	    push @chapters, $ch_url;
+	    @chapters = ();
+	    my $num_ch = $1;
+	    for (my $i=1; $i <= $num_ch; $i++)
+	    {
+		my $ch_url = sprintf($fmt, $sid, $i);
+		warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
+		push @chapters, $ch_url;
+	    }
 	}
     }
 

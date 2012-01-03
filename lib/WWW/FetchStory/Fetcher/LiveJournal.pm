@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::LiveJournal;
 {
-  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::LiveJournal - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -140,7 +140,7 @@ sub extract_story {
 	$year = $1;
 	$month = $2;
 	$day = $3;
-	warn "year=$year,month=$month,day=$day\n" if $self->{verbose};
+	warn "year=$year,month=$month,day=$day\n" if ($self->{verbose} > 1);
     }
 
     if (!$url)
@@ -237,8 +237,8 @@ sub extract_story {
     {
 	$story = $1;
     }
-    warn "ljuser=$ljuser, title=$title\n" if $self->{verbose};
-    warn "url=$url\n" if $self->{verbose};
+    warn "ljuser=$ljuser, title=$title\n" if ($self->{verbose} > 1);
+    warn "url=$url\n" if ($self->{verbose} > 1);
     if ($story)
     {
 	$story = $self->tidy_chars($story);
@@ -304,7 +304,8 @@ sub parse_author {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -312,8 +313,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -393,10 +395,18 @@ sub parse_chapter_urls {
     );
     my $content = $args{content};
     my $user = $args{user};
-    my @chapters = ("$args{url}?format=light");
-    if ($user)
+    my @chapters = ();
+    if (defined $args{urls})
     {
-	warn "user=$user\n" if $self->{verbose};
+	@chapters = @{$args{urls}};
+	for (my $i = 0; $i < @chapters; $i++)
+	{
+	    $chapters[$i] = sprintf('%s?format=light', $chapters[$i]);
+	}
+    }
+    if (@chapters == 1 and $user)
+    {
+	warn "user=$user\n" if ($self->{verbose} > 1);
 	if ($args{is_community})
 	{
 	    while ($content =~ m/href="(http:\/\/community\.livejournal\.com\/${user}\/\d+.html)(#cutid\d)?">/sg)
@@ -404,7 +414,7 @@ sub parse_chapter_urls {
 		my $ch_url = $1;
 		if ($ch_url ne $args{url})
 		{
-		    warn "chapter=$ch_url\n" if $self->{verbose};
+		    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
 		    push @chapters, "${ch_url}?format=light";
 		}
 	    }
@@ -416,7 +426,7 @@ sub parse_chapter_urls {
 		my $ch_url = $1;
 		if ($ch_url ne $args{url})
 		{
-		    warn "chapter=$ch_url\n" if $self->{verbose};
+		    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
 		    push @chapters, "${ch_url}?format=light";
 		}
 	    }

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1704';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.18';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1704
+version 0.18
 
 =head1 DESCRIPTION
 
@@ -110,11 +110,11 @@ sub extract_story {
     }
     $author =~ s/^\s*//;
     $author =~ s/\s*$//;
-    warn "title=$title\n" if $self->{verbose};
-    warn "author=$author\n" if $self->{verbose};
+    warn "title=$title\n" if ($self->{verbose} > 1);
+    warn "author=$author\n" if ($self->{verbose} > 1);
 
     my $universe = $self->parse_universe(content=>$content);
-    warn "universe=$universe\n" if $self->{verbose};
+    warn "universe=$universe\n" if ($self->{verbose} > 1);
 
     my $category = '';
     my $characters = '';
@@ -128,11 +128,11 @@ sub extract_story {
 	$characters =~ s!\s*\&\s!, !g;
 
     }
-    warn "category=$category\n" if $self->{verbose};
-    warn "characters=$characters\n" if $self->{verbose};
+    warn "category=$category\n" if ($self->{verbose} > 1);
+    warn "characters=$characters\n" if ($self->{verbose} > 1);
 
     my $chapter = $self->parse_ch_title(%args);
-    warn "chapter=$chapter\n" if $self->{verbose};
+    warn "chapter=$chapter\n" if ($self->{verbose} > 1);
 
     my $story = '';
     if ($content =~ m#id=storycontent class=storycontent>(.*?)\s*</div>\s*</div>\s*<div id=content>#s)
@@ -182,7 +182,8 @@ sub extract_story {
 Parse the table-of-contents file.
 
     %info = $self->parse_toc(content=>$content,
-			 url=>$url);
+			 url=>$url,
+			 urls=>\@urls);
 
 This should return a hash containing:
 
@@ -190,8 +191,9 @@ This should return a hash containing:
 
 =item chapters
 
-An array of URLs for the chapters of the story.  (In the case where the
-story only takes one page, that will be the chapter).
+An array of URLs for the chapters of the story.  In the case where the
+story only takes one page, that will be the chapter.
+In the case where multiple URLs have been passed in, it will be those URLs.
 
 =item title
 
@@ -294,33 +296,42 @@ sub parse_chapter_urls {
     my $content = $args{content};
     my $sid = $args{sid};
     my @chapters = ();
-    # fortunately fanfiction.net has a sane-ish chapter system
-    # find the chapter from the chapter selection form
-    if ($content =~ m#<SELECT title='chapter\snavigation'\sName=chapter(.*?)</select>#is)
+    if (defined $args{urls})
     {
-	my $ch_select = $1;
-	if ($ch_select =~ m/<option\s*value=(\d+)\s*>[^<]+$/s)
+	@chapters = @{$args{urls}};
+	for (my $i = 0; $i < @chapters; $i++)
 	{
-	    my $num_ch = $1;
-	    my $fmt = $args{url};
-	    $fmt =~ s/www/m/;
-	    $fmt =~ s!/\d+/\d+/!/%d/\%d/!;
-	    for (my $i=1; $i <= $num_ch; $i++)
-	    {
-		my $ch_url = sprintf($fmt, $sid, $i);
-		warn "chapter=$ch_url\n" if $self->{verbose};
-		push @chapters, $ch_url;
-	    }
-	}
-	else
-	{
-	    warn "ch_select=$ch_select";
-	    @chapters = ($args{mob_url});
+	    $chapters[$i] =~ s/www/m/; # convert to mobile-site URL
 	}
     }
-    else # only one chapter
+
+    if (@chapters == 1)
     {
-	@chapters = ($args{mob_url});
+	# fortunately fanfiction.net has a sane-ish chapter system
+	# find the chapter from the chapter selection form
+	if ($content =~ m#<SELECT title='chapter\snavigation'\sName=chapter(.*?)</select>#is)
+	{
+	    @chapters = ();
+	    my $ch_select = $1;
+	    if ($ch_select =~ m/<option\s*value=(\d+)\s*>[^<]+$/s)
+	    {
+		my $num_ch = $1;
+		my $fmt = $args{url};
+		$fmt =~ s/www/m/;
+		$fmt =~ s!/\d+/\d+/!/%d/\%d/!;
+		for (my $i=1; $i <= $num_ch; $i++)
+		{
+		    my $ch_url = sprintf($fmt, $sid, $i);
+		    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
+		    push @chapters, $ch_url;
+		}
+	    }
+	    else
+	    {
+		warn "ch_select=$ch_select";
+		@chapters = ($args{mob_url});
+	    }
+	}
     }
 
     return \@chapters;
