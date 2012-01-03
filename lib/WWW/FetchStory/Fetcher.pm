@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.18';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1801';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.18
+version 0.1801
 
 =head1 DESCRIPTION
 
@@ -779,6 +779,10 @@ sub parse_summary {
 	$summary = $1;
     }
     elsif ($content =~ m#<i>Summary:</i>\s*([^<]+)\s*<br>#s)
+    {
+	$summary = $1;
+    }
+    elsif ($content =~ m#>Summary:\s*</span>\s*([^<]+)\s*<br#s)
     {
 	$summary = $1;
     }

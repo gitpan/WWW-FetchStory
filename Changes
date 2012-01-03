@@ -1,6 +1,16 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1801 2012-01-03
+------------------
+
+* 2012-01-03 20:16:29 +1100
+  version bump
+* 2012-01-03 20:15:45 +1100
+  fixing bug with Livejournal parsing
+* 2012-01-03 20:05:19 +1100
+  fixing bug with LiveJournal parsing
+
 v0.18 2012-01-03
 ----------------
 

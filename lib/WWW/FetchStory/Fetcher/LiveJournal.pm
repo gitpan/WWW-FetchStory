@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::LiveJournal;
 {
-  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.18';
+  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.1801';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::LiveJournal - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.18
+version 0.1801
 
 =head1 DESCRIPTION
 
@@ -169,6 +169,10 @@ sub extract_story {
 	$story = $1;
     }
     elsif ($content =~ m#<div class="b-singlepost-body">(.*?)<div class="b-singlepost-tags ljtags">#s)
+    {
+	$story = $1;
+    }
+    elsif ($content =~ m#<div class="b-singlepost-body">(.*?)</div>#s)
     {
 	$story = $1;
     }
@@ -358,6 +362,7 @@ sub parse_toc {
 
     my $title = $self->parse_title(%args);
     $title =~ s/${user}:\s*//;
+    $title =~ s/Fic:\s*//;
     $info{title} = $title;
 
     my $summary = $self->parse_summary(%args);
