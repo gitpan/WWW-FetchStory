@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1802';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1803';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1802
+version 0.1803
 
 =head1 DESCRIPTION
 

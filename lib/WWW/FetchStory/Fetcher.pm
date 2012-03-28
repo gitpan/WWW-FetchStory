@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1802';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1803';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1802
+version 0.1803
 
 =head1 DESCRIPTION
 
@@ -1330,7 +1330,12 @@ sub build_toc {
     my $filename = sprintf("%s00.html", $info->{basename});
 
     my $html;
-    my $characters = join( ', ', @{$info->{characters}} );
+    my $characters = (ref $info->{characters}
+                      ? join( ', ', @{$info->{characters}} )
+                      : $info->{characters});
+    my $universe = (ref $info->{universe}
+                      ? join( ', ', @{$info->{universe}} )
+                      : $info->{universe});
     $html = <<EOT;
 <html>
 <head><title>$info->{title}</title></head>
@@ -1342,7 +1347,7 @@ sub build_toc {
 $info->{summary}
 </p>
 <p><b>Words:</b> $info->{wordcount}<br/>
-<b>Universe:</b> $info->{universe}</p>
+<b>Universe:</b> $universe</p>
 <b>Characters:</b> $characters</p>
 <ol>
 EOT
