@@ -1,6 +1,16 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1802 2012-03-29
+------------------
+
+* 2012-03-29 07:38:04 +1100
+  version bump
+* 2012-03-28 10:26:10 -0400
+  characters is an array, not a string, due to derive_values
+* 2012-03-03 21:13:54 +1100
+  fixing bug with chapter title parsing on FFN
+
 v0.1801 2012-01-03
 ------------------
 
@@ -276,24 +286,6 @@ v0.10 2011-07-08
   refine parsing of URLs
 * 2011-03-24 10:11:37 +1100
   Version bump.
-
-v0.09 2011-03-24
-----------------
-
-* 2011-03-24 10:05:01 +1100
-  Get story and chapter wordcounts.
-
-v0.08 2011-02-27
-----------------
-
-* 2011-02-27 18:34:16 +1100
-  version bump
-* 2011-02-27 18:31:16 +1100
-  Added ToC option to build a Table-of-Contents file
-* 2011-02-27 18:30:15 +1100
-  Tweaking info and parsing summary.
-* 2011-02-27 16:57:36 +1100
-  Improved information.
 
 ===================================
 End of changes in the last 365 days
