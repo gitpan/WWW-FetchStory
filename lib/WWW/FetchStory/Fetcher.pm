@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1803';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1804';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1803
+version 0.1804
 
 =head1 DESCRIPTION
 
@@ -493,8 +493,10 @@ sub tidy {
     $html = encode("UTF-8", $html);
     my $xhtml = $tidy->clean($html, 'UTF-8', 1);
 
-    # fixing an error
+    # fixing some errors
     $xhtml =~ s!xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml"!xmlns="http://www.w3.org/1999/xhtml"!;
+    $xhtml =~ s!<i/>!!g;
+    $xhtml =~ s!<b/>!!g;
 
     return $xhtml;
 } # tidy

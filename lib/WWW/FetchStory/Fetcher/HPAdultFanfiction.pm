@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::HPAdultFanfiction;
 {
-  $WWW::FetchStory::Fetcher::HPAdultFanfiction::VERSION = '0.1803';
+  $WWW::FetchStory::Fetcher::HPAdultFanfiction::VERSION = '0.1804';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::HPAdultFanfiction - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.1803
+version 0.1804
 
 =head1 DESCRIPTION
 

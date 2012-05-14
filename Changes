@@ -1,6 +1,14 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1804 2012-05-14
+------------------
+
+* 2012-05-14 18:36:23 +1000
+  version bump
+* 2012-05-14 18:33:28 +1000
+  fixing errors with FictionAlley parsing
+
 v0.1803 2012-03-29
 ------------------
 
