@@ -1,6 +1,14 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1805 2012-05-29
+------------------
+
+* 2012-05-29 10:40:11 +1000
+  version bump
+* 2012-05-29 10:39:27 +1000
+  fixed parsing of fanfiction.net stories AGAIN
+
 v0.1804 2012-05-14
 ------------------
 
