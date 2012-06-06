@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1805';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1806';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1805
+version 0.1806
 
 =head1 DESCRIPTION
 
@@ -231,14 +231,7 @@ sub parse_toc {
     {
 	return $self->SUPER::parse_toc(%args);
     }
-    if ($content =~ m/&#187; <b>([^<]+)<\/b>/s)
-    {
-	$info{title} = $1;
-    }
-    else
-    {
-	$info{title} = $self->parse_title(%args);
-    }
+    $info{title} = $self->parse_title(%args);
     my $auth_url = '';
     if ($content =~ m#<a href='(/u/\d+/\w+)'>([^<]+)</a>#s)
     {
@@ -313,7 +306,8 @@ sub parse_chapter_urls {
     {
 	# fortunately fanfiction.net has a sane-ish chapter system
 	# find the chapter from the chapter selection form
-	if ($content =~ m#<SELECT title='chapter\snavigation'\sName=chapter(.*?)</select>#is)
+	if ($content =~ m#<SELECT title='chapter\snavigation'\sName=chapter(.*?)</select>#is
+            or $content =~ m#<SELECT id=chap_select title='chapter navigation' Name=chapter(.*?)</select>#is)
 	{
 	    @chapters = ();
 	    my $ch_select = $1;
@@ -431,6 +425,35 @@ sub parse_universe {
     }
     return $universe;
 } # parse_universe
+
+=head2 parse_title
+
+Get the title from the content
+
+=cut
+sub parse_title {
+    my $self = shift;
+    my %args = (
+	content=>'',
+	@_
+    );
+
+    my $content = $args{content};
+    my $title = '';
+    if ($content =~ m/&#187; <b>([^<]+)<\/b>/s)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<title>([^<]+)Chapter[^<]+</title>#is)
+    {
+	$title = $1;
+    }
+    else
+    {
+	$title = $self->SUPER::parse_title(%args);
+    }
+    return $title;
+} # parse_title
 
 =head2 parse_ch_title
 

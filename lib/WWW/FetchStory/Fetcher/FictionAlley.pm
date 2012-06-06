@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FictionAlley;
 {
-  $WWW::FetchStory::Fetcher::FictionAlley::VERSION = '0.1805';
+  $WWW::FetchStory::Fetcher::FictionAlley::VERSION = '0.1806';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FictionAlley - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1805
+version 0.1806
 
 =head1 DESCRIPTION
 
