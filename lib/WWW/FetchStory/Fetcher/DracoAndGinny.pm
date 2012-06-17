@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::DracoAndGinny;
 {
-  $WWW::FetchStory::Fetcher::DracoAndGinny::VERSION = '0.1806';
+  $WWW::FetchStory::Fetcher::DracoAndGinny::VERSION = '0.1807';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::DracoAndGinny - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1806
+version 0.1807
 
 =head1 DESCRIPTION
 

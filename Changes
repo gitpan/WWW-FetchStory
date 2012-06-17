@@ -1,6 +1,18 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1807 2012-06-17
+------------------
+
+* 2012-06-17 11:17:09 +1000
+  version bump
+* 2012-06-17 11:15:20 +1000
+  Fixed problem with chapter-URL parsing on Petulant Poetess
+* 2012-06-12 10:08:30 +1000
+  ffn title parsing
+* 2012-06-12 10:04:58 +1000
+  ffn title parsing
+
 v0.1806 2012-06-06
 ------------------
 

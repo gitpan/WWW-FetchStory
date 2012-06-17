@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1806';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1807';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1806
+version 0.1807
 
 =head1 DESCRIPTION
 
@@ -444,7 +444,7 @@ sub parse_title {
     {
 	$title = $1;
     }
-    elsif ($content =~ m#<title>([^<]+)Chapter[^<]+</title>#is)
+    elsif ($content =~ m#<title>([^<]+)\s*Chapter[^<]+</title>#is)
     {
 	$title = $1;
     }
@@ -452,6 +452,7 @@ sub parse_title {
     {
 	$title = $self->SUPER::parse_title(%args);
     }
+    $title =~ s/\s+$//;
     return $title;
 } # parse_title
 
