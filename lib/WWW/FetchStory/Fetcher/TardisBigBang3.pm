@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::TardisBigBang3;
 {
-  $WWW::FetchStory::Fetcher::TardisBigBang3::VERSION = '0.1807';
+  $WWW::FetchStory::Fetcher::TardisBigBang3::VERSION = '0.1808';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::TardisBigBang3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1807
+version 0.1808
 
 =head1 DESCRIPTION
 

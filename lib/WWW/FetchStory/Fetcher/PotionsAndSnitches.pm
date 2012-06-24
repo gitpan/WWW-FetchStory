@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::PotionsAndSnitches;
 {
-  $WWW::FetchStory::Fetcher::PotionsAndSnitches::VERSION = '0.1807';
+  $WWW::FetchStory::Fetcher::PotionsAndSnitches::VERSION = '0.1808';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::PotionsAndSnitches - fetching module for WWW::FetchSto
 
 =head1 VERSION
 
-version 0.1807
+version 0.1808
 
 =head1 DESCRIPTION
 

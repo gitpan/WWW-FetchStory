@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1807';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1808';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1807
+version 0.1808
 
 =head1 DESCRIPTION
 
@@ -169,7 +169,7 @@ sub parse_chapter_urls {
 	@chapters = @{$args{urls}};
     }
     if (@chapters == 1
-	    and $content =~ m!href="(/downloads/[-\w]+/$sid/[^.]+\.html)"!)
+	    and $content =~ m!href="(/downloads/[-\/\w]+/$sid/[^.]+\.html)"!)
     {
 	@chapters = ("http://archiveofourown.org$1");
     }
@@ -192,7 +192,7 @@ sub parse_epub_url {
     my $content = $args{content};
     my $sid = $args{sid};
     my $epub_url = '';
-    if ($content =~ m!href="(/downloads/\w+/$sid/[^.]+\.epub)"!)
+    if ($content =~ m!href="(/downloads/[-\/\w]+/$sid/[^.]+\.epub)"!)
     {
 	$epub_url = ("http://archiveofourown.org$1");
     }
