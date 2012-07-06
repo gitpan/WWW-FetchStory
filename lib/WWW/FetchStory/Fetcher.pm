@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1808';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1809';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1808
+version 0.1809
 
 =head1 DESCRIPTION
 
@@ -966,30 +966,36 @@ sub derive_values {
     my $words = $args{info}->{wordcount};
     if ($words)
     {
-	my $len = '';
-	if ($words == 100)
-	{
-	    $len = 'Drabble';
-	} elsif ($words == 200)
-	{
-	    $len = 'Double Drabble';
-	} elsif ($words >= 50000)
-	{
-	    $len = 'Novel';
-	} elsif ($words >= 20000)
-	{
-	    $len = 'Novella';
-	} elsif ($words >= 7500)
-	{
-	    $len = 'Novelette';
-	} elsif ($words >= 1000)
-	{
-	    $len = 'Short Story';
-	} elsif ($words < 1000)
-	{
-	    $len = 'Vignette';
-	}
-	$args{info}->{story_length} = $len if $len;
+        my $len = '';
+        if ($words == 100)
+        {
+            $len = 'Drabble';
+        } elsif ($words == 200)
+        {
+            $len = 'Double Drabble';
+        } elsif ($words >= 75000)
+        {
+            $len = 'Long Novel';
+        } elsif ($words >= 50000)
+        {
+            $len = 'Novel';
+        } elsif ($words >= 25000)
+        {
+            $len = 'Novella';
+        } elsif ($words >= 7500)
+        {
+            $len = 'Novelette';
+        } elsif ($words >= 2000)
+        {
+            $len = 'Short Story';
+        } elsif ($words > 500)
+        {
+            $len = 'Short Short';
+        } elsif ($words <= 500)
+        {
+            $len = 'Flash';
+        }
+        $args{info}->{story_length} = $len if $len;
     }
     for my $field (qw{characters universe category})
     {

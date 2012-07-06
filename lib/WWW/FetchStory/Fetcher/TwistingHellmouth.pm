@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::TwistingHellmouth;
 {
-  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.1808';
+  $WWW::FetchStory::Fetcher::TwistingHellmouth::VERSION = '0.1809';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::TwistingHellmouth - fetching module for WWW::FetchStor
 
 =head1 VERSION
 
-version 0.1808
+version 0.1809
 
 =head1 DESCRIPTION
 
