@@ -1,6 +1,24 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1810 2012-07-13
+------------------
+
+* 2012-07-13 18:37:46 +1000
+  version bump
+* 2012-07-13 18:36:41 +1000
+  fixing fanfiction.net chapter parsing
+* 2012-07-06 23:10:44 +1000
+  more formatting
+* 2012-07-06 22:23:26 +1000
+  more formatting
+* 2012-07-06 21:27:57 +1000
+  parsing LJ titles
+* 2012-07-06 18:05:07 +1000
+  more LiveJournal parsing
+* 2012-07-06 15:26:45 +1000
+  improve LiveJournal chapter parsing
+
 v0.1809 2012-07-06
 ------------------
 
@@ -270,84 +288,6 @@ v0.1201 2011-07-17
   version bump
 * 2011-07-17 15:57:31 +1000
   dealing with characters and universes better
-
-v0.12 2011-07-10
-----------------
-
-* 2011-07-10 15:18:35 +1000
-  version bump
-* 2011-07-10 15:17:33 +1000
-  Added Fetcher for AO3.
-* 2011-07-10 15:16:41 +1000
-  Added parse_rating; split certain meta into Arrays
-* 2011-07-09 12:33:50 +1000
-  tweak
-* 2011-07-09 12:22:09 +1000
-  Revamped the character-parsing for Teaspoon.
-* 2011-07-09 11:41:53 +1000
-  correcting error with Teaspoon author parsing
-* 2011-07-09 11:30:08 +1000
-  "fetched" is not a Subject
-
-v0.11 2011-07-09
-----------------
-
-* 2011-07-09 11:20:15 +1000
-  version bump
-* 2011-07-09 11:18:03 +1000
-  Making the story_length work properly
-* 2011-07-09 11:03:40 +1000
-  added calculation of story-length eg Novel
-* 2011-07-08 21:05:47 +1000
-  Another bug fix.
-
-v0.1004 2011-07-08
-------------------
-
-* 2011-07-08 20:33:10 +1000
-  more ruddy bug fixes
-
-v0.1003 2011-07-08
-------------------
-
-* 2011-07-08 20:22:40 +1000
-  version bump
-* 2011-07-08 20:22:04 +1000
-  more bug fixes!
-
-v0.1002 2011-07-08
-------------------
-
-* 2011-07-08 20:08:43 +1000
-  version bump
-* 2011-07-08 20:06:48 +1000
-  Fixing story-parsing for FFN.
-
-v0.1001 2011-07-08
-------------------
-
-* 2011-07-08 18:30:49 +1000
-  version bump
-* 2011-07-08 18:29:55 +1000
-  Fixed bug with chapter-title parsing.
-
-v0.10 2011-07-08
-----------------
-
-* 2011-07-08 17:26:18 +1000
-  version bump
-* 2011-07-08 17:24:33 +1000
-  Convert to EPUB option!
-* 2011-07-08 13:51:54 +1000
-  Make a separate README file.
-* 2011-07-08 12:09:03 +1000
-  added a README.pod for github
-* 2011-04-22 17:01:59 +1000
-  refine parsing of URLs
-* 2011-04-22 16:48:36 +1000
-  refine parsing of URLs
-* 2011-03-24 10:11:37 +1100
-  Version bump.
 
 ===================================
 End of changes in the last 365 days

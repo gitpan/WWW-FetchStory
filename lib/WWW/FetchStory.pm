@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package WWW::FetchStory;
 {
-  $WWW::FetchStory::VERSION = '0.1809';
+  $WWW::FetchStory::VERSION = '0.1810';
 }
 =head1 NAME
 
@@ -10,7 +10,7 @@ WWW::FetchStory - Fetch a story from a fiction website
 
 =head1 VERSION
 
-version 0.1809
+version 0.1810
 
 =head1 SYNOPSIS
 

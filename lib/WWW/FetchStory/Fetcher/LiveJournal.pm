@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::LiveJournal;
 {
-  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.1809';
+  $WWW::FetchStory::Fetcher::LiveJournal::VERSION = '0.1810';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::LiveJournal - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1809
+version 0.1810
 
 =head1 DESCRIPTION
 
@@ -242,10 +242,12 @@ sub extract_story {
     warn "url=$url\n" if ($self->{verbose} > 1);
     if ($story)
     {
-	$story = $self->tidy_chars($story);
-	# remove cutid1
+	# remove LJ-specific cruft
 	$story =~ s#<a name="cutid."></a>##sg;
         $story =~ s#<a name='cutid.-end'></a>##sg;
+        $story =~ s#<center><div class="lj-like">.*</center>##sg;
+
+	$story = $self->tidy_chars($story);
     }
     else
     {
@@ -327,7 +329,15 @@ sub parse_title {
 
     my $content = $args{content};
     my $title = '';
-    if ($content =~ m#<title>[\w]+:\s*([^<]+)</title>#s)
+    if ($content =~ /<(?:b|strong)>Title:?\s*<\/(?:b|strong)>:?\s*"?(.*?)"?\s*<(?:br|p|\/p|div|\/div)/si)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ /\bTitle:\s*"?(.*?)"?\s*<br/s)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<title>[\w]+:\s*([^<]+)</title>#s)
     {
 	$title = $1;
     }
@@ -344,14 +354,6 @@ sub parse_title {
 	$title = $2;
     }
     elsif ($content =~ m#<div class="subject">([^<]+)</div>#)
-    {
-	$title = $1;
-    }
-    elsif ($content =~ /<(?:b|strong)>Title:?\s*<\/(?:b|strong)>:?\s*"?(.*?)"?\s*<(?:br|p|\/p|div|\/div)/si)
-    {
-	$title = $1;
-    }
-    elsif ($content =~ /\bTitle:\s*"?(.*?)"?\s*<br/s)
     {
 	$title = $1;
     }
@@ -466,6 +468,11 @@ sub parse_chapter_urls {
     my $content = $args{content};
     my $user = $args{user};
     my @chapters = ();
+
+    # avoid adding duplicate URLs by remembering what we've parsed
+    my %remember_ch_urls = ();
+    $remember_ch_urls{$args{url}} = 1;
+
     if (defined $args{urls})
     {
 	@chapters = @{$args{urls}};
@@ -482,10 +489,11 @@ sub parse_chapter_urls {
 	    while ($content =~ m/href="(http:\/\/community\.livejournal\.com\/${user}\/\d+.html)(#cutid\d)?">/sg)
 	    {
 		my $ch_url = $1;
-		if ($ch_url ne $args{url})
+		if (!$remember_ch_urls{$ch_url})
 		{
 		    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
 		    push @chapters, "${ch_url}?format=light";
+                    $remember_ch_urls{$ch_url} = 1;
 		}
 	    }
 	}
@@ -494,10 +502,11 @@ sub parse_chapter_urls {
 	    while ($content =~ m/href="(http:\/\/${user}\.livejournal\.com\/\d+.html)(#cutid\d)?">/sg)
 	    {
 		my $ch_url = $1;
-		if ($ch_url ne $args{url})
+		if (!$remember_ch_urls{$ch_url})
 		{
 		    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
 		    push @chapters, "${ch_url}?format=light";
+                    $remember_ch_urls{$ch_url} = 1;
 		}
 	    }
 	}
