@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1810';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1812';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1810
+version 0.1812
 
 =head1 DESCRIPTION
 
@@ -119,7 +119,7 @@ sub extract_story {
     my $category = '';
     my $characters = '';
     my $para = '';
-    if ($content =~ m!Rated:\s*\w+,\s*English,\s*([^,]+),\s*([^:,]+),\s*(P:[^<]+)<!)
+    if ($content =~ m!Rated:\s*[-\w]+,\s*English,\s*([^,]+),\s*([^:,]+),\s*(P:[^<]+)<!)
     {
 	$category = $1;
 	$characters = $2;
@@ -135,7 +135,15 @@ sub extract_story {
     warn "chapter=$chapter\n" if ($self->{verbose} > 1);
 
     my $story = '';
-    if ($content =~ m#class='storycontent puretext' id='storycontent'\s*>(.*?)\s*</div>\s*</div>\s*<div id='content' class='puretext'>#s)
+    if ($content =~ m#class='storycontent' id='storycontent'\s*>(.*?)\s*<center>.*?Ch \d+ of <a href='[^']+'>\d+</a>.*?<br>\s*<span class='xbut corner_round'>#s)
+    {
+	$story = $1;
+    }
+    elsif ($content =~ m#class='storycontent' id='storycontent'\s*>(.*?)\s*<center>\s*<br>\s*<span class='xbut corner_round'>#s)
+    {
+	$story = $1;
+    }
+    elsif ($content =~ m#class='storycontent puretext' id='storycontent'\s*>(.*?)\s*</div>\s*</div>\s*<div id='content' class='puretext'>#s)
     {
 	$story = $1;
     }
@@ -233,7 +241,7 @@ sub parse_toc {
     }
     $info{title} = $self->parse_title(%args);
     my $auth_url = '';
-    if ($content =~ m#<a href='(/u/\d+/\w+)'>([^<]+)</a>#s)
+    if ($content =~ m#<a href='(/u/\d+/[-\w]+)'>([^<]+)</a>#s)
     {
 	$auth_url = $1;
 	$info{author} = $2;
@@ -245,7 +253,7 @@ sub parse_toc {
     # The summary is on the Author page!
     if ($auth_url && $sid)
     {
-	my $auth_page = $self->get_page("http://www.fanfiction.net${auth_url}");
+        my $auth_page = $self->get_page("http://www.fanfiction.net${auth_url}");
 	if ($auth_page =~ m#<a href="/s/${sid}/\d+/[-\w]+">.*?<div\s*class='[-\w\s]+'>([^<]+)<div#s)
 	{
 	    $info{summary} = $1;
@@ -307,10 +315,10 @@ sub parse_chapter_urls {
     if (@chapters == 0 or @chapters == 1)
     {
 	# fortunately fanfiction.net has a sane-ish chapter system
-        if ($content =~ m#-\s+Chapters:\s+(\d+)\s+-\s+Words:\s+[\d,]+\s+-\s+Updated:#is)
+        if ($content =~ m#-\s+Chapters:\s+(\d+)\s+-\s+Words:\s+[\d,]#is)
         {
-            @chapters = ();
             my $num_chapters = $1;
+            @chapters = ();
             my $fmt = $args{url};
             $fmt =~ s/www/m/;
             $fmt =~ s!/\d+/\d+/!/%d/\%d/!;
@@ -343,7 +351,29 @@ sub parse_category {
 
     my $category = '';
     my $characters = '';
-    if ($content =~ m!Rated:\s*\w+,\s*English,\s*([^,]+),\s*([^,]+),\s*(P:[^<]+)<!)
+    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
+    {
+	$category = $1;
+	$characters = $2;
+	$category =~ s!\s*\&\s!, !g;
+	$characters =~ s!\s*\&\s!, !g;
+	$characters =~ s!\.!!g;
+    }
+    elsif ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*Words:[^<]+!)
+    {
+        # only one of category or characters
+	$category = $1;
+        if ($category =~ /\./)
+        {
+            # these are characters
+            $category = '';
+        }
+        else
+        {
+            $category =~ s!\s*\&\s!, !g;
+        }
+    }
+    elsif ($content =~ m!Rated:\s*[\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*(P:[^<]+)<!)
     {
 	$category = $1;
 	$characters = $2;
@@ -353,7 +383,7 @@ sub parse_category {
     }
     else
     {
-	$characters = $self->SUPER::parse_characters(%args);
+	$category = $self->SUPER::parse_category(%args);
     }
     return $category;
 } # parse_category
@@ -371,30 +401,54 @@ sub parse_characters {
 
     my $category = '';
     my $characters = '';
-    if ($content =~ m!Rated:\s*\w+,\s*English,\s*([^,]+),\s*([^,]+),\s*(P:[^<]+)<!)
+    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
     {
 	$category = $1;
 	$characters = $2;
 	$category =~ s!\s*\&\s!, !g;
 	$characters =~ s!\s*\&\s!, !g;
 	$characters =~ s!\.!!g;
-
-	# Correct some character names
-	$characters =~ s/Hermione G/Hermione Granger/;
-	$characters =~ s/Severus S/Severus Snape/;
-	$characters =~ s/Harry P/Harry Potter/;
-	$characters =~ s/Draco M/Draco Malfoy/;
-	$characters =~ s/Remus L/Remus Lupin/;
-	$characters =~ s/Sirius B/Sirius Black/;
-	$characters =~ s/Alastor M/Alastor Moody/;
-	$characters =~ s/Ginny W/Ginny Weasley/;
-	$characters =~ s/Fred W/Fred Weasley/;
-	$characters =~ s/George W/George Weasley/;
+    }
+    elsif ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*Words:[^<]+!)
+    {
+        # only one of category or characters
+	$characters = $1;
+        if ($characters =~ /\./)
+        {
+            # these are characters
+            $characters =~ s!\s*\&\s!, !g;
+            $characters =~ s!\.!!g;
+        }
+        else
+        {
+            $characters = '';
+        }
+    }
+    elsif ($content =~ m!Rated:\s*[-\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*(P:[^<]+)<!)
+    {
+        $category = $1;
+        $characters = $2;
+        $category =~ s!\s*\&\s!, !g;
+        $characters =~ s!\s*\&\s!, !g;
+        $characters =~ s!\.!!g;
     }
     else
     {
-	$characters = $self->SUPER::parse_characters(%args);
+        $characters = $self->SUPER::parse_characters(%args);
     }
+
+    # Correct some character names
+    $characters =~ s/Hermione G/Hermione Granger/;
+    $characters =~ s/Severus S/Severus Snape/;
+    $characters =~ s/Harry P/Harry Potter/;
+    $characters =~ s/Draco M/Draco Malfoy/;
+    $characters =~ s/Remus L/Remus Lupin/;
+    $characters =~ s/Sirius B/Sirius Black/;
+    $characters =~ s/Alastor M/Alastor Moody/;
+    $characters =~ s/Ginny W/Ginny Weasley/;
+    $characters =~ s/Fred W/Fred Weasley/;
+    $characters =~ s/George W/George Weasley/;
+
     return $characters;
 } # parse_characters
 
@@ -410,7 +464,7 @@ sub parse_universe {
     my $content = $args{content};
 
     my $universe = '';
-    if ($content =~ m!&#187; <a href="/(?:anime|book|cartoon|comic|game|misc|movie|play|tv)/\w+/">([^<]+)</a>!)
+    if ($content =~ m!&#187; <a href="/(?:anime|book|cartoon|comic|game|misc|movie|play|tv)/[-\w]+/">([^<]+)</a>!)
     {
 	$universe = $1;
     }
@@ -420,6 +474,28 @@ sub parse_universe {
     }
     return $universe;
 } # parse_universe
+
+=head2 parse_author
+
+Get the author from the content
+
+=cut
+sub parse_author {
+    my $self = shift;
+    my %args = (
+	content=>'',
+	@_
+    );
+
+    my $author = $self->SUPER::parse_author(%args);
+    # extract the actual author name
+    if ($author =~ m#<a href='/u/\d+/[-\w]+'>([^<]+)</a>#s)
+    {
+        $author = $1;
+    }
+
+    return $author;
+} # parse_author
 
 =head2 parse_title
 

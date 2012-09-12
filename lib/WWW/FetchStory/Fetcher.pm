@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1810';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1812';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1810
+version 0.1812
 
 =head1 DESCRIPTION
 
@@ -88,6 +88,7 @@ sub init {
 	$self->{user_agent} = LWP::UserAgent->new(
 	    keep_alive => 1,
 	    env_proxy => 1,
+            agent => ref $self,
 	);
 	$self->{user_agent}->show_progress($self->{verbose} > 0);
 	if ($self->{firefox_cookies} and -f $self->{firefox_cookies})
