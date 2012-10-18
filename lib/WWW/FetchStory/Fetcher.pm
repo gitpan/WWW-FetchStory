@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1812';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1813';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1812
+version 0.1813
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ use HTML::Tidy::libXML;
 use EBook::EPUB;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use YAML::Any;
-use LWP::UserAgent;
+use WWW::Mechanize::Sleepy;
 use Encode qw( encode );
 use HTTP::Cookies;
 use HTTP::Cookies::Wget;
@@ -85,9 +85,10 @@ sub init {
     }
     else
     {
-	$self->{user_agent} = LWP::UserAgent->new(
+	$self->{user_agent} = WWW::Mechanize::Sleepy->new(
 	    keep_alive => 1,
 	    env_proxy => 1,
+            sleep => '1..10',
             agent => ref $self,
 	);
 	$self->{user_agent}->show_progress($self->{verbose} > 0);

@@ -1,6 +1,12 @@
 Revision History for WWW-FetchStory
 ===================================
 
+v0.1813 2012-10-18
+------------------
+
+* 2012-10-18 22:59:32 +1100
+  Trying to get around fussy websites by sleeping between fetches.
+
 v0.1812 2012-09-12
 ------------------
 
