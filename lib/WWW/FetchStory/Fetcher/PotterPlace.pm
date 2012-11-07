@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::PotterPlace;
 {
-  $WWW::FetchStory::Fetcher::PotterPlace::VERSION = '0.1813';
+  $WWW::FetchStory::Fetcher::PotterPlace::VERSION = '0.1814';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::PotterPlace - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1813
+version 0.1814
 
 =head1 DESCRIPTION
 
