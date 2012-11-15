@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1814';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1815';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1814
+version 0.1815
 
 =head1 DESCRIPTION
 
@@ -285,8 +285,9 @@ sub fetch {
     {
 	my @ch_urls = @{$story_info{chapters}};
 	my $one_chapter = (@ch_urls == 1);
-	my $first_chapter_is_toc = $story_info{toc_first};
-	delete $story_info{toc_first};
+	my $first_chapter_is_toc =
+            $story_info{toc_first} || $self->{first_is_toc};
+        delete $story_info{toc_first};
 	my @ch_titles = ();
 	my @ch_wc = ();
 	my $count = (($one_chapter or $first_chapter_is_toc) ? 0 : 1);
@@ -422,7 +423,12 @@ sub extract_story {
 	$title = $args{title};
     }
 
-    if ($args{content} =~ m#<body[^>]*>(.*)</body>#is)
+    # some badly formed pages have multiple BODY tags
+    if ($args{content} =~ m#<body[^>]*>.*?<body[^>]*>(.*?)</body>#is)
+    {
+	$story = $1;
+    }
+    elsif ($args{content} =~ m#<body[^>]*>(.*)</body>#is)
     {
 	$story = $1;
     }
@@ -680,6 +686,10 @@ sub parse_title {
 	$title = $1;
     }
     elsif ($content =~ m#<h1>([^<]+)</h1>#is)
+    {
+	$title = $1;
+    }
+    elsif ($content =~ m#<p class=MsoTitle>([^<]+)</p>#is)
     {
 	$title = $1;
     }
@@ -1317,6 +1327,11 @@ sub wordcount {
     my @words = split(' ', $stripped);
     my $wordcount = @words;
     my $chars = length($stripped);
+    if ($self->{debug})
+    {
+        my $orig_length = length($args{content});
+        print "orig_length=$orig_length, words=$wordcount, chars=$chars\n";
+    }
     return (
 	words=>$wordcount,
 	chars=>$chars,
