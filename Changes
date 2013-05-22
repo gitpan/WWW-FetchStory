@@ -1,9 +1,13 @@
 Revision History for WWW-FetchStory
 ===================================
 
-v0.1815 2012-11-15
+v0.1816 2013-05-22
 ------------------
 
+* 2013-05-22 13:38:23 +1000
+  version bump
+* 2013-05-22 13:37:15 +1000
+  yet another fix for fanfiction.net story parsing
 * 2012-11-15 13:55:05 +1100
   version bump
 * 2012-11-15 13:53:21 +1100
@@ -106,120 +110,6 @@ v0.1805 2012-05-29
   version bump
 * 2012-05-29 10:39:27 +1000
   fixed parsing of fanfiction.net stories AGAIN
-
-v0.1804 2012-05-14
-------------------
-
-* 2012-05-14 18:36:23 +1000
-  version bump
-* 2012-05-14 18:33:28 +1000
-  fixing errors with FictionAlley parsing
-
-v0.1803 2012-03-29
-------------------
-
-* 2012-03-29 07:48:57 +1100
-  version bump
-* 2012-03-29 07:47:08 +1100
-  Fixed universe display in build_toc
-
-v0.1802 2012-03-29
-------------------
-
-* 2012-03-29 07:38:04 +1100
-  version bump
-* 2012-03-28 10:26:10 -0400
-  characters is an array, not a string, due to derive_values
-* 2012-03-03 21:13:54 +1100
-  fixing bug with chapter title parsing on FFN
-
-v0.1801 2012-01-03
-------------------
-
-* 2012-01-03 20:16:29 +1100
-  version bump
-* 2012-01-03 20:15:45 +1100
-  fixing bug with Livejournal parsing
-* 2012-01-03 20:05:19 +1100
-  fixing bug with LiveJournal parsing
-
-v0.18 2012-01-03
-----------------
-
-* 2012-01-03 16:51:19 +1100
-  version bump
-* 2012-01-03 12:19:20 +1100
-  Enable multiple URLs to be given for one story.
-* 2012-01-03 12:18:58 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:18:29 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:18:14 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:17:43 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:17:23 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:16:39 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:16:31 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:16:15 +1100
-  multiple levels of verbosity
-* 2012-01-03 12:13:46 +1100
-  multiple levels of verbosity
-* 2012-01-03 10:18:02 +1100
-  new year, new copyright date
-
-v0.1704 2012-01-03
-------------------
-
-* 2012-01-03 10:10:05 +1100
-  version bump
-* 2012-01-03 10:08:51 +1100
-  Fixing bug with parsing LJ stories.
-
-v0.1703 2012-01-02
-------------------
-
-* 2012-01-02 22:15:15 +1100
-  version bump
-* 2012-01-02 22:14:10 +1100
-  more fixes for AO3 parsing
-
-v0.1702 2012-01-02
-------------------
-
-* 2012-01-02 22:04:20 +1100
-  version bump
-* 2012-01-02 22:02:46 +1100
-  fixing an AO3 bug with co-authors
-
-v0.1701 2012-01-02
-------------------
-
-* 2012-01-02 21:11:03 +1100
-  updating internal docs
-* 2012-01-02 21:03:58 +1100
-  version bump
-* 2012-01-02 21:01:24 +1100
-  More bugfixes for AO3.
-
-v0.17 2012-01-02
-----------------
-
-* 2012-01-02 19:45:45 +1100
-  version bump
-* 2012-01-02 19:42:36 +1100
-  Fixed bug with AO3, plus EPUB fetching.
-* 2011-11-12 13:41:38 +1100
-  tweaking Dist::Zilla stuff
-* 2011-11-12 13:38:19 +1100
-  added recipient for SSHG exchange
-* 2011-09-29 09:20:16 +1000
-  a bit more verbose verbose output
-* 2011-09-20 11:55:00 +1000
-  tweak to allow wget options
 
 ===================================
 End of changes in the last 365 days
