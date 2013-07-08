@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1816';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1817';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1816
+version 0.1817
 
 =head1 DESCRIPTION
 
@@ -562,7 +562,17 @@ sub get_page {
 	else {
 	    die "FAILED fetching $url ", $res->status_line;
 	}
-	$content = $res->decoded_content;
+	$content = $res->decoded_content || $res->content;
+    }
+
+    if (!$content and $self->{verbose})
+    {
+        warn "No content from $url";
+        if ($self->{debug})
+        {
+            # there's a problem, we want to debug it
+            exit;
+        }
     }
 
     return $content;
@@ -1044,6 +1054,7 @@ sub get_chapter {
     );
 
     my $content = $self->get_page($args{url});
+
     my ($story, $title) = $self->extract_story(%args, content=>$content);
 
     my $chapter_title = $self->parse_ch_title(content=>$content);
