@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::DigitalQuill;
 {
-  $WWW::FetchStory::Fetcher::DigitalQuill::VERSION = '0.1817';
+  $WWW::FetchStory::Fetcher::DigitalQuill::VERSION = '0.1818';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::DigitalQuill - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1817
+version 0.1818
 
 =head1 DESCRIPTION
 
@@ -77,7 +77,7 @@ sub allow {
     my $self = shift;
     my $url = shift;
 
-    return ($url =~ /www\.digital-quill\.org$/);
+    return ($url =~ /www\.digital-quill\.org/);
 } # allow
 
 =head1 Private Methods

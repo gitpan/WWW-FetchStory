@@ -1,21 +1,25 @@
 Revision History for WWW-FetchStory
 ===================================
 
-v0.1817 2013-07-09
+v0.1818 2013-07-23
 ------------------
 
+* 2013-07-23 17:50:37 +1000
+  version bump
+* 2013-06-21 15:31:48 +1000
+  fixing URL test
 * 2013-07-09 08:10:52 +1000
   version bump
 * 2013-07-09 08:10:23 +1000
   dealing better with fetching pages
-
-v0.1816 2013-05-22
-------------------
-
 * 2013-05-22 13:38:23 +1000
   version bump
 * 2013-05-22 13:37:15 +1000
   yet another fix for fanfiction.net story parsing
+
+v0.1815 2012-11-15
+------------------
+
 * 2012-11-15 13:55:05 +1100
   version bump
 * 2012-11-15 13:53:21 +1100
@@ -54,24 +58,6 @@ v0.1812 2012-09-12
   version bump
 * 2012-07-13 18:56:28 +1000
   more fixing chapter parsing
-
-v0.1810 2012-07-13
-------------------
-
-* 2012-07-13 18:37:46 +1000
-  version bump
-* 2012-07-13 18:36:41 +1000
-  fixing fanfiction.net chapter parsing
-* 2012-07-06 23:10:44 +1000
-  more formatting
-* 2012-07-06 22:23:26 +1000
-  more formatting
-* 2012-07-06 21:27:57 +1000
-  parsing LJ titles
-* 2012-07-06 18:05:07 +1000
-  more LiveJournal parsing
-* 2012-07-06 15:26:45 +1000
-  improve LiveJournal chapter parsing
 
 ===================================
 End of changes in the last 365 days
