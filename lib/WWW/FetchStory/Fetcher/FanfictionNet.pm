@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1818';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1819';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1818
+version 0.1819
 
 =head1 DESCRIPTION
 
@@ -116,26 +116,11 @@ sub extract_story {
     my $universe = $self->parse_universe(content=>$content);
     warn "universe=$universe\n" if ($self->{verbose} > 1);
 
-    my $category = '';
-    my $characters = '';
-    my $para = '';
-    if ($content =~ m!Rated:\s*[-\w]+,\s*English,\s*([^,]+),\s*([^:,]+),\s*(P:[^<]+)<!)
-    {
-	$category = $1;
-	$characters = $2;
-	$para = $3;
-	$category =~ s!\s*\&\s!, !g;
-	$characters =~ s!\s*\&\s!, !g;
-
-    }
-    warn "category=$category\n" if ($self->{verbose} > 1);
-    warn "characters=$characters\n" if ($self->{verbose} > 1);
-
     my $chapter = $self->parse_ch_title(%args);
     warn "chapter=$chapter\n" if ($self->{verbose} > 1);
 
     my $story = '';
-    if ($content =~ m#class='storycontent' id='storycontent'\s*>(.*?)\s*<center>.*?Ch \d+ of <a href='[^']+'>\d+</a>.*?<br>\s*<span class='xbut corner_round'>#s)
+    if ($content =~ m# id='storycontent'\s*>(.*?)\s*<center>.*?Ch \d+ of <a href='[^']+'>\d+</a>.*?<br>\s*<span class='xbut corner_round'>#s)
     {
 	$story = $1;
     }
@@ -178,10 +163,7 @@ sub extract_story {
     {
 	$out .= "<h1>$story_title</h1>\n";
 	$out .= "<p>by $author</p>\n";
-	$out .= "<p>$category ";
 	$out .= "<br/>\n<b>Universe:</b> $universe\n" if $universe;
-	$out .= "<br/>\n<b>Characters:</b> $characters\n" if $characters;
-	$out .= "<br/>$para</p>\n" if $para;
 	$out .= "<div>\n";
 	$out .= "$story\n";
 	$out .= "</div>\n";
@@ -351,7 +333,14 @@ sub parse_category {
 
     my $category = '';
     my $characters = '';
-    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
+    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*(.*?),\s*Words:!)
+    {
+	$category = $1;
+	$characters = $2;
+	$category =~ s!\s*\&\s!, !g;
+	$characters =~ s!\.!!g;
+    }
+    elsif ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
     {
 	$category = $1;
 	$characters = $2;
@@ -401,7 +390,14 @@ sub parse_characters {
 
     my $category = '';
     my $characters = '';
-    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
+    if ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*(.*?),\s*Words:!)
+    {
+	$category = $1;
+	$characters = $2;
+	$category =~ s!\s*\&\s!, !g;
+	$characters =~ s!\.!!g;
+    }
+    elsif ($content =~ m!Rated:\s*[+\w]+,\s*English,\s*([^,]+),\s*([^,]+),\s*Words:[^<]+!)
     {
 	$category = $1;
 	$characters = $2;

@@ -1,63 +1,47 @@
 Revision History for WWW-FetchStory
 ===================================
 
-v0.1818 2013-07-23
+v0.1819 2013-12-20
 ------------------
 
+* 2013-12-20 17:27:00 +1100
+  version bump
+* 2013-12-20 17:26:00 +1100
+  fixing LJ parsing
+* 2013-11-14 17:58:32 +1100
+  fixed another FFN bug
+* 2013-11-13 16:29:07 +1100
+  got rid of non-UTF8 characters in tidy_chars
+* 2013-09-14 11:53:53 +1000
+  merging master
+* 2013-09-14 11:49:34 +1000
+  added [ReportVersions::Tiny]
 * 2013-07-23 17:50:37 +1000
   version bump
 * 2013-06-21 15:31:48 +1000
   fixing URL test
+
+v0.1817 2013-07-09
+------------------
+
 * 2013-07-09 08:10:52 +1000
   version bump
 * 2013-07-09 08:10:23 +1000
   dealing better with fetching pages
+
+v0.1816 2013-05-22
+------------------
+
 * 2013-05-22 13:38:23 +1000
   version bump
 * 2013-05-22 13:37:15 +1000
   yet another fix for fanfiction.net story parsing
-
-v0.1815 2012-11-15
-------------------
-
 * 2012-11-15 13:55:05 +1100
   version bump
 * 2012-11-15 13:53:21 +1100
   tweaking default fetcher
 * 2012-11-15 09:41:48 +1100
   added debugging bit
-
-v0.1814 2012-11-08
-------------------
-
-* 2012-11-08 07:28:46 +1100
-  version bump
-* 2012-11-08 07:27:42 +1100
-  tweaking Dreamwidth parsing
-
-v0.1813 2012-10-18
-------------------
-
-* 2012-10-18 22:59:32 +1100
-  Trying to get around fussy websites by sleeping between fetches.
-
-v0.1812 2012-09-12
-------------------
-
-* 2012-09-12 16:40:27 +1000
-  version bump
-* 2012-09-12 16:28:35 +1000
-  more fixing of Fanfiction.net parsing
-* 2012-08-27 19:58:30 +1000
-  Fanfiction.net have changed their format again.
-* 2012-08-01 18:45:23 +1000
-  fixing parsing LiveJournal
-* 2012-08-01 11:54:18 +1000
-  Added an Agent string to fetching.
-* 2012-07-13 18:57:31 +1000
-  version bump
-* 2012-07-13 18:56:28 +1000
-  more fixing chapter parsing
 
 ===================================
 End of changes in the last 365 days
