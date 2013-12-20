@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::FanfictionNet;
 {
-  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1819';
+  $WWW::FetchStory::Fetcher::FanfictionNet::VERSION = '0.1820';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::FanfictionNet - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1819
+version 0.1820
 
 =head1 DESCRIPTION
 
@@ -120,7 +120,11 @@ sub extract_story {
     warn "chapter=$chapter\n" if ($self->{verbose} > 1);
 
     my $story = '';
-    if ($content =~ m# id='storycontent'\s*>(.*?)\s*<center>.*?Ch \d+ of <a href='[^']+'>\d+</a>.*?<br>\s*<span class='xbut corner_round'>#s)
+    if ($content =~ m# id='storycontent'\s*>(.*?)\s*<div align=center>#s)
+    {
+	$story = $1;
+    }
+    elsif ($content =~ m# id='storycontent'\s*>(.*?)\s*<center>.*?Ch \d+ of <a href='[^']+'>\d+</a>.*?<br>\s*<span class='xbut corner_round'>#s)
     {
 	$story = $1;
     }
@@ -213,7 +217,7 @@ sub parse_toc {
     my @chapters = ();
     $info{url} = $args{url};
     my $sid='';
-    if ($args{url} =~ m#http://www.fanfiction.net/s/(\d+)/#)
+    if ($args{url} =~ m#https?://www.fanfiction.net/s/(\d+)/#)
     {
 	$sid = $1;
     }
