@@ -1,9 +1,10 @@
+use 5.006;
 use strict;
 use warnings;
 
-# this test was generated with Dist::Zilla::Plugin::Test::Compile 2.037
+# this test was generated with Dist::Zilla::Plugin::Test::Compile 2.039
 
-use Test::More  tests => 24 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 25 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 
 
@@ -28,6 +29,7 @@ my @module_files = (
     'WWW/FetchStory/Fetcher/PotterPlace.pm',
     'WWW/FetchStory/Fetcher/RestrictedSection.pm',
     'WWW/FetchStory/Fetcher/SSHGExchange.pm',
+    'WWW/FetchStory/Fetcher/SSHGPromptfest.pm',
     'WWW/FetchStory/Fetcher/TardisBigBang3.pm',
     'WWW/FetchStory/Fetcher/Teaspoon.pm',
     'WWW/FetchStory/Fetcher/TwistingHellmouth.pm'
@@ -45,11 +47,12 @@ use File::Spec;
 use IPC::Open3;
 use IO::Handle;
 
+open my $stdin, '<', File::Spec->devnull or die "can't open devnull: $!";
+
 my @warnings;
 for my $lib (@module_files)
 {
     # see L<perlfaq8/How can I capture STDERR from an external command?>
-    open my $stdin, '<', File::Spec->devnull or die "can't open devnull: $!";
     my $stderr = IO::Handle->new;
 
     my $pid = open3($stdin, '>&STDERR', $stderr, $^X, $inc_switch, '-e', "require q[$lib]");
@@ -73,7 +76,6 @@ foreach my $file (@scripts)
 
     my @flags = $1 ? split(/\s+/, $1) : ();
 
-    open my $stdin, '<', File::Spec->devnull or die "can't open devnull: $!";
     my $stderr = IO::Handle->new;
 
     my $pid = open3($stdin, '>&STDERR', $stderr, $^X, $inc_switch, @flags, '-c', $file);

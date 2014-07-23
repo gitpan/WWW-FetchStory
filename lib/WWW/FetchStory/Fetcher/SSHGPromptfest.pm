@@ -1,12 +1,12 @@
-package WWW::FetchStory::Fetcher::PetulantPoetess;
+package WWW::FetchStory::Fetcher::SSHGPromptfest;
 {
-  $WWW::FetchStory::Fetcher::PetulantPoetess::VERSION = '0.1821';
+  $WWW::FetchStory::Fetcher::SSHGPromptfest::VERSION = '0.1821';
 }
 use strict;
 use warnings;
 =head1 NAME
 
-WWW::FetchStory::Fetcher::PetulantPoetess - fetching module for WWW::FetchStory
+WWW::FetchStory::Fetcher::SSHGPromptfest - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
@@ -14,11 +14,13 @@ version 0.1821
 
 =head1 DESCRIPTION
 
-This is the PetulantPoetess story-fetching plugin for WWW::FetchStory.
+This is the SSHGPromptfest story-fetching plugin for WWW::FetchStory.
 
 =cut
 
-our @ISA = qw(WWW::FetchStory::Fetcher);
+our @ISA = qw(WWW::FetchStory::Fetcher::LiveJournal);
+
+=head1 METHODS
 
 =head2 info
 
@@ -31,7 +33,7 @@ $info = $self->info();
 sub info {
     my $self = shift;
     
-    my $info = "(http://www.thepetulantpoetess.com/) A Harry Potter fiction archive.";
+    my $info = "(http://sshg_promptfest.livejournal.com/) Severus Snape/Hermione Granger fiction exchange comm.";
 
     return $info;
 } # info
@@ -42,8 +44,8 @@ The priority of this fetcher.  Fetchers with higher priority
 get tried first.  This is useful where there may be a generic
 fetcher for a particular site, and then a more specialized fetcher
 for particular sections of a site.  For example, there may be a
-generic PetulantPoetess fetcher, and then refinements for particular
-PetulantPoetess community, such as the sshg_exchange community.
+generic LiveJournal fetcher, and then refinements for particular
+LiveJournal community, such as the sshg_exchange community.
 This works as either a class function or a method.
 
 This must be overridden by the specific fetcher class.
@@ -57,7 +59,7 @@ $priority = WWW::FetchStory::Fetcher::priority($class);
 sub priority {
     my $class = shift;
 
-    return 1;
+    return 2;
 } # priority
 
 =head2 allow
@@ -77,7 +79,7 @@ sub allow {
     my $self = shift;
     my $url = shift;
 
-    return ($url =~ /thepetulantpoetess\.com/);
+    return ($url =~ /sshg[-_]promptfest\.livejournal\.com/);
 } # allow
 
 =head1 Private Methods
@@ -118,26 +120,27 @@ sub parse_toc {
 	@_
     );
 
-    my %info = ();
     my $content = $args{content};
-    my @chapters = ();
-    $info{url} = $args{url};
-    my $sid='';
-    if ($args{url} =~ m#sid=(\d+)#)
-    {
-	$sid = $1;
-    }
-    else
-    {
-	return $self->SUPER::parse_toc(%args);
-    }
 
-    $info{title} = $self->parse_title(%args);
-    $info{author} = $self->parse_author(%args);
-    $info{summary} = $self->parse_summary(%args);
-    $info{characters} = $self->parse_characters(%args);
+    my %info = ();
+    $info{url} = $args{url};
+    $info{toc_first} = 1;
+
+    my $title = $self->parse_title(%args);
+    $title =~ s/sshg_promptfest\s*//;
+    $info{title} = $title;
+
+    my $summary = $self->parse_summary(%args);
+    $summary =~ s/"/'/g;
+    $info{summary} = $summary;
+
+    my $author = $self->parse_author(%args);
+    $info{author} = $author;
+
+    $info{characters} = "Hermione Granger, Severus Snape";
     $info{universe} = 'Harry Potter';
-    $info{chapters} = $self->parse_chapter_urls(%args, sid=>$sid);
+    $info{recipient} = $self->parse_recipient(%args);
+    $info{chapters} = $self->parse_chapter_urls(%args);
 
     return %info;
 } # parse_toc
@@ -160,55 +163,23 @@ sub parse_chapter_urls {
     if (defined $args{urls})
     {
 	@chapters = @{$args{urls}};
+	for (my $i = 0; $i < @chapters; $i++)
+	{
+	    $chapters[$i] = sprintf('%s?format=light', $chapters[$i]);
+	}
     }
     if (@chapters == 1)
     {
-	@chapters = ();
-	# PetulantPoetess does not have a sane chapter system
-	my $fmt = 'http://www.thepetulantpoetess.com/viewstory.php?action=printable&sid=%d';
-        my $prev_sid = '';
-	while ($content =~ m#viewstory.php\?sid=(\d+)#sg)
+	while ($content =~ m/href=["'](http:\/\/sshg[-_]pf[-_](?:mod|fanwork)\.livejournal\.com\/\d+.html)/sg)
 	{
-	    my $ch_sid = $1;
-            # single-chapter stories end up with the same url multiple times
-            if ($ch_sid ne $prev_sid)
-            {
-                my $ch_url = sprintf($fmt, $ch_sid);
-                warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
-                push @chapters, $ch_url;
-                $prev_sid = $ch_sid;
-            }
+	    my $ch_url = $1;
+	    warn "chapter=$ch_url\n" if ($self->{verbose} > 1);
+	    push @chapters, "${ch_url}?format=light";
 	}
     }
 
     return \@chapters;
 } # parse_chapter_urls
 
-=head2 parse_author
-
-Get the author from the content
-
-=cut
-sub parse_author {
-    my $self = shift;
-    my %args = (
-	url=>'',
-	content=>'',
-	@_
-    );
-
-    my $content = $args{content};
-    my $author = '';
-    if ($content =~ m#<a href="viewuser.php\?uid=\d+">([^<]+)</a>#s)
-    {
-	$author = $1;
-    }
-    else
-    {
-	$author = $self->SUPER::parse_author(%args);
-    }
-    return $author;
-} # parse_author
-
-1; # End of WWW::FetchStory::Fetcher::PetulantPoetess
+1; # End of WWW::FetchStory::Fetcher::SSHGPromptfest
 __END__

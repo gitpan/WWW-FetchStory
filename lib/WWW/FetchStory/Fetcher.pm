@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1820';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1821';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1820
+version 0.1821
 
 =head1 DESCRIPTION
 
@@ -911,7 +911,7 @@ sub parse_recipient {
 
     my $content = $args{content};
     my $recipient = '';
-    if ($content =~ m#Recipient: (\w+)#is)
+    if ($content =~ m#(?:Recipient|Prompter): (\w+)#is)
     {
 	$recipient = $1;
     }
