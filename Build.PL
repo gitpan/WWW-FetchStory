@@ -18,7 +18,7 @@ my %module_build_args = (
     "Kathryn Andersen <perlkat\@katspace.org>"
   ],
   "dist_name" => "WWW-FetchStory",
-  "dist_version" => "0.1821",
+  "dist_version" => "0.1822",
   "license" => "perl",
   "module_name" => "WWW::FetchStory",
   "recommends" => {},

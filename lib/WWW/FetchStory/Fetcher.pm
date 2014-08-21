@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher;
 {
-  $WWW::FetchStory::Fetcher::VERSION = '0.1821';
+  $WWW::FetchStory::Fetcher::VERSION = '0.1822';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1821
+version 0.1822
 
 =head1 DESCRIPTION
 
@@ -1148,6 +1148,7 @@ sub get_epub {
 		}
 	    }
 	}
+        print STDERR "get_epub: about to replace description\n" if $self->{debug};
 	$self->epub_replace_description(description=>$meta{summary}, xml=>$dom);
 	# remove meta info we don't want to be added to this
 	delete $meta{description};
@@ -1176,6 +1177,8 @@ sub epub_replace_description {
     my %args = @_;
 
     my $dom = $args{xml};
+    my $desc = $args{description};
+    print STDERR "epub_replace_description: description=$desc\n" if $self->{debug};
     my @metanodes = $dom->getElementsByLocalName('metadata');
     return unless @metanodes;
     my $metanode = $metanodes[0];
@@ -1184,7 +1187,7 @@ sub epub_replace_description {
     {
 	$metanode->removeChild($dnodes[0]);
     }
-    $metanode->appendTextChild('dc:description', $args{description});
+    $metanode->appendTextChild('dc:description', $desc);
 } # epub_replace_description
 
 =head2 epub_add_meta

@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::AO3;
 {
-  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1821';
+  $WWW::FetchStory::Fetcher::AO3::VERSION = '0.1822';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::AO3 - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1821
+version 0.1822
 
 =head1 DESCRIPTION
 
@@ -271,6 +271,12 @@ sub parse_summary {
     {
 	$summary = $self->SUPER::parse_summary(%args);
     }
+    # AO3 tends to have messy HTML stuff stuck in the summary
+    $summary =~ s!&lt;[a-zA-Z]&gt;!!g;
+    $summary =~ s!&lt;/[a-zA-Z]&gt;!!g;
+    $summary =~ s!<\w+>!!g;
+    $summary =~ s!</\w+>!!g;
+    $summary =~ s!&#x27;!'!g;
     return $summary;
 } # parse_summary
 

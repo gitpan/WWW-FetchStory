@@ -1,6 +1,6 @@
 package WWW::FetchStory::Fetcher::DigitalQuill;
 {
-  $WWW::FetchStory::Fetcher::DigitalQuill::VERSION = '0.1821';
+  $WWW::FetchStory::Fetcher::DigitalQuill::VERSION = '0.1822';
 }
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ WWW::FetchStory::Fetcher::DigitalQuill - fetching module for WWW::FetchStory
 
 =head1 VERSION
 
-version 0.1821
+version 0.1822
 
 =head1 DESCRIPTION
 
